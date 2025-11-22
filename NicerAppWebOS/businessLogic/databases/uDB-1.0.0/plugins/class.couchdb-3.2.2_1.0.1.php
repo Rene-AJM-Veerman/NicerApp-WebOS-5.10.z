@@ -826,7 +826,7 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
                         '/\.vivid([\w]+)[\s\.\>\#\w]*/' ,
                         '/#site([\w]+)[\s\.\>\#\w]*/'
                     ], css_to_array (file_get_contents(
-                        realpath(dirname(__FILE__).'/../../../..')
+                        realpath(dirname(__FILE__).'/../../../../..')
                         .'/NicerAppWebOS/themes/nicerapp_default_siteContent-almost-transparent.css'
                     )), []
                 )
@@ -862,7 +862,7 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
                 cssArray_seperate('Dialogs', [
                     '/\.vivid([\w]+)[\s\.\>\#\w]*/' ,
                     '/#site([\w]+)[\s\.\>\#\w]*/' ], css_to_array (file_get_contents(
-                        realpath(dirname(__FILE__).'/../../../..')
+                        realpath(dirname(__FILE__).'/../../../../..')
                         .'/NicerAppWebOS/themes/nicerapp_default_siteContent-almost-transparent.css'
                     )), []
                 )
@@ -899,7 +899,7 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
                 cssArray_seperate('dialogs', [
                     '/\.vivid([\w]+)[\s\.\>\#\w]*/' ,
                     '/#site([\w]+)[\s\.\>\#\w]*/' ], css_to_array (file_get_contents(
-                        realpath(dirname(__FILE__).'/../../../..')
+                        realpath(dirname(__FILE__).'/../../../../..')
                         .'/NicerAppWebOS/themes/nicerapp_default_siteContent-almost-transparent.css'
                     )), []
                 ),
@@ -907,7 +907,7 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
                     '/\.vivid([\w]+)[\s\.\>\#\w]*/' ,
                     '/#app__musicPlayer__([\w]+)[\s\.\>\#\w]*/'
                 ], css_to_array (file_get_contents(
-                        realpath(dirname(__FILE__).'/../../../..').'/NicerAppWebOS/themes/nicerapp_app.2D.musicPlayer-v2.css'
+                        realpath(dirname(__FILE__).'/../../../../..').'/NicerAppWebOS/themes/nicerapp_app.2D.musicPlayer-v2.css'
                     )), []
                 )
             )
@@ -935,7 +935,7 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
                 cssArray_seperate('dialogs', [
                     '/\.vivid([\w]+)[\s\.\>\#\w]*/' ,
                     '/#site([\w]+)[\s\.\>\#\w]*/' ], css_to_array (file_get_contents(
-                        realpath(dirname(__FILE__).'/../../../..')
+                        realpath(dirname(__FILE__).'/../../../../..')
                         .'/NicerAppWebOS/themes/nicerapp_default_siteContent-almost-transparent.css'
                     )),[]
                 ),
@@ -943,7 +943,7 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
                     '/\.vivid([\w]+)[\s\.\>\#\w]*/' ,
                     '/#app__musicPlayer__([\w]+)[\s\.\>\#\w]*/'
                 ], css_to_array (file_get_contents(
-                        realpath(dirname(__FILE__).'/../../../..').'/NicerAppWebOS/themes/nicerapp_app.2D.musicPlayer-v2.css'
+                        realpath(dirname(__FILE__).'/../../../../..').'/NicerAppWebOS/themes/nicerapp_app.2D.musicPlayer-v2.css'
                     )), []
                 )
             )
@@ -1045,11 +1045,11 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
             'lastUsed' => time(),
             'dialogs' => array_merge_recursive(
                             css_to_array (file_get_contents(
-                                realpath(dirname(__FILE__).'/../../../..')
+                                realpath(dirname(__FILE__).'/../../../../..')
                                 .'/NicerAppWebOS/themes/nicerapp_default_siteContent-almost-transparent.css'
                             )),
                             css_to_array (file_get_contents(
-                                realpath(dirname(__FILE__).'/../../../..')
+                                realpath(dirname(__FILE__).'/../../../../..')
                                 .'/NicerAppWebOS/themes/nicerapp_app.2D.musicPlayer.css'
                             ))
             )
@@ -1077,11 +1077,11 @@ class class_NicerAppWebOS_database_API_couchdb_3_2 {
             'textBackgroundOpacity' => 0.38,
             'dialogs' => array_merge_recursive(
                             css_to_array (file_get_contents(
-                                realpath(dirname(__FILE__).'/../../../..')
+                                realpath(dirname(__FILE__).'/../../../../..')
                                 .'/NicerAppWebOS/themes/nicerapp_default_siteContent-almost-transparent.css'
                             )),
                             css_to_array (file_get_contents(
-                                realpath(dirname(__FILE__).'/../../../..')
+                                realpath(dirname(__FILE__).'/../../../../..')
                                 .'/NicerAppWebOS/themes/nicerapp_app.2D.musicPlayer.css'
                             ))
             )

@@ -141,6 +141,9 @@ class NicerAppWebOS {
             $this->path.'/NicerAppWebOS/apps/'
             .'manufacturerNameForDomainName_'.$this->domainFolder.'_val.txt';
         if (!file_exists($midsFile)) {
+            echo '<pre>';
+            print_r (debug_backtrace());
+            echo '</pre>';
             $msg = $fncn.' : file "'.$midsFile.'" does not exist';
             echo $msg;
             trigger_error ($msg, E_USER_ERROR);
@@ -1686,7 +1689,7 @@ class NicerAppWebOS {
                     };
                     $r .= '$(document).ready(function() {'.PHP_EOL;
                         $r .= "\t//setTimeout(function() {".PHP_EOL;
-                        $r .= "\t\tna.site.setSpecificity();".PHP_EOL;
+                        //$r .= "\t\tna.site.setSpecificity();".PHP_EOL;
                         $r .= "\t//}, 10);".PHP_EOL;
                     $r .= "});".PHP_EOL;
                     $r .= '</script>'.PHP_EOL;

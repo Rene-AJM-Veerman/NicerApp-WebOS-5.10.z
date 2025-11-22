@@ -30,8 +30,7 @@ if (false) {
 };
 if (
     $naLAN
-    || (false
-        && (array_key_exists('pw',$_GET)
+    || ((array_key_exists('pw',$_GET)
             && (
                 $_GET['pw']=='efv7750'
                 || $_GET['pw']=='xmas2025ai-d'

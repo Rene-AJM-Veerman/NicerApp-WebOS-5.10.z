@@ -832,7 +832,7 @@ na.desktop = na.d = {
     registerProgress : function (name, func) {
         var entry = { name : name, callback : func };
         na.d.deleteProgress(name);
-        na.d.s.callbacksProgress.push (entry); // na.d.s = na.d.sktop.settings
+        //na.d.s.callbacksProgress.push (entry); // na.d.s = na.d.sktop.settings
     },
 
     deleteProgress : function (name) {
@@ -843,7 +843,7 @@ na.desktop = na.d = {
 
     registerCallback : function (name, divID, func) {
         var entry = { name : name, divID : divID, callback : func };
-        na.d.s.callbacks.push (entry); // na.d.s = na.d.sktop.settings
+        //na.d.s.callbacks.push (entry); // na.d.s = na.d.sktop.settings
     },
 
     deleteCallback : function (name) {

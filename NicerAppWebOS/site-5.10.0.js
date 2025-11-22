@@ -2871,7 +2871,7 @@ na.site = {
                 if ($(optEl2)[0].selected) $('#nb_url1_dropdown_selected, #url1_dropdown_selected').html(el.innerHTML);
             });
 
-            $('#url0').html('/'+$.cookie('cdb_loginName').replace(/.*___/g,'').replace(/__/g,'-')+'/');
+            $('#url0').html('/'+($.cookie('cdb_loginName')||'Guest').replace(/.*___/g,'').replace(/__/g,'-')+'/');
 
             $('#nb_url1_dropdown, #url1_dropdown').hover(function() {
                 $('#nb_url1_dropdown_selector, #url1_dropdown_selector').fadeIn('normal');
@@ -3292,7 +3292,7 @@ na.site = {
             }, ms);
 
         if (dat.textBackgroundOpacity) {
-            na.te.settings.current.textBackgroundOpacity = dat.textBackgroundOpacity;
+            na.te.settings.textBackgroundOpacity = dat.textBackgroundOpacity;
             $('#btnOptions_menu input.sliderOpacityRange').val(dat.textBackgroundOpacity * 100);
             /*
             $('li span, p, h1, h2, h3').css({

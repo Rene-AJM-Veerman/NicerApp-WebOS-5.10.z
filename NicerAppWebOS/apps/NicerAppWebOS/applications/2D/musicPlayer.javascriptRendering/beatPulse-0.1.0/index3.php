@@ -229,7 +229,7 @@ $(document).ready(function() {
   };
 
   // load audio file passed in from PHP's (the browser's) window.top
-  const file = 'https://said.by/<?php echo $_GET['file'];?>';
+  const file = '<?php echo $_GET['file'];?>';
   if (!file) return;
   //const data = await fetch(file);
   const myRequest = new Request(file);

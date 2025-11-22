@@ -1,5 +1,5 @@
 if (typeof na!=='object') { var NicerApp_WebOS = nicerapp = na = {}; }
-na.background = na.bg = {
+na.backgrounds = na.background = na.bg = {
     settings : {
         useFading : true,
         fadingMaxTime : 3000

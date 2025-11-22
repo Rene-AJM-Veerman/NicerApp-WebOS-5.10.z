@@ -243,7 +243,7 @@
                     }
                 }
             }
-            $pagerHTML .= '<br/>(<span style="color:lime">'.secondsToTimeString($pageDurationInSeconds).' on this page,</span> <span style="color:white;">'.secondsToTimeString($collectionDurationInSeconds).' overall.</span>)<br/>';
+            $pagerHTML .= '<br/>(<span style="color:lime">'.secondsToTimeString($pageDurationInSeconds).' on this page,</span> <span style="color:white;">'.secondsToTimeString($collectionDurationInSeconds).' overall.</span>) (<a href="copyright.html">Copyright disclaimer</a>)<br/>';
             $pagerHTML .= '</div>';
             echo $pagerHTML;
             echo '<div style="">';

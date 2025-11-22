@@ -1,0 +1,6 @@
+{
+    "require": {
+        "guzzlehttp/guzzle": "^7.10",
+        "symfony/console": "^7.3"
+    }
+}

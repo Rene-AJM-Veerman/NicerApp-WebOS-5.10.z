@@ -14,6 +14,8 @@ You are allowed to export your data at any time of your choosing, or have it ema
 
 There is no real "Delete Content" feature on this Website. All that can be done is to hide posted content from the general public. It will remain available to law enforcement and said.by moderators and owners.
 
+Messages on this platform will be stored encrypted, but will always be able to get quickly decrypted by law enforcement officers, also to facilitate crime prevention.
+
 If needed, the same "Content Collections" that posts and media files can be posted into (as singular Threads of 1 Post followed by potentially many Comments), can be used to shield (an) audience(s) from such a Content Collection.
 
 You will not engage in any breaches of Freedom of Speech or any other laws that apply to any of the jurisdictions that govern your audience(s).

@@ -677,4 +677,3 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/applications/2D/musicPlayer.ja
 	
 };
 //}, 100); // na.m.waitForCondition() (see top of this file)
-                    na.musicPlayer.settings.loadedIn['#siteContent'].onload( {} );
