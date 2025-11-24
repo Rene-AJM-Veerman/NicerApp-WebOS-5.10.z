@@ -10,6 +10,25 @@ $acdb = $adb->cdb;
 
 // //echo '<pre>'; var_dump ($_POST); die();
 $html = str_replace('&lt;','<',str_replace('&gt;','>',$_POST['document']));
+$pattern = '/<a.*?href="(.*?)".*?>(.*)<\/a>/i';
+preg_match_all ($pattern, $html, $matches);
+//var_dump ($html); echo '<br/>'.PHP_EOL.PHP_EOL; print_r ($matches);echo '<br/>'.PHP_EOL.PHP_EOL; //exit();
+
+$pm = true;
+foreach ($matches[1] as $idx => $m) {
+    //var_dump ($m); echo PHP_EOL;
+    if (
+        (
+        stripos ($matches[2][$idx], 'http://') !== false
+        || stripos ($matches[2][$idx], 'https://') !== false
+        )
+        && (
+            stripos($matches[1][$idx], $matches[2][$idx]) !== false
+        )
+    ) $pm = false;
+}
+
+
 if (
     (
         strpos ($html, '<script') !== false
@@ -17,6 +36,7 @@ if (
         || strpos ($html, 'javascript:') !== false
         || strpos ($html, '<?php') !== false
         || strpos ($html, '<iframe') !== false
+        || !$pm
     )
 ) exit ('403 Forbidden - Illegal content.');
 

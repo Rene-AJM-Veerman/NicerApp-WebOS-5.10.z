@@ -1,7 +1,7 @@
 <?php
 global $useRememberMe; $useRememberMe = true;
 
-$rootPathNA = realpath(dirname(__FILE__).'/../..').'/NicerAppWebOS';
+$rootPathNA = realpath(dirname(__FILE__).'/../../..').'/NicerAppWebOS';
 require_once ($rootPathNA.'/boot.php');
 
 $debug = true;

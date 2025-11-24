@@ -7,30 +7,12 @@
 
 <p class="backdropped" style="width:30%"><b>Last modified : 2025-11-01-Saturday 12:05CET Amsterdam.NL</b></p>
 <p class="backdropped" style="width:30%">
-The yearly release stage of a new <a href="https://github.com/NicerEnterprises/">stable version</a> of NicerApp WebOS is always Dec 1st - Dec 24th.<br/>
+The yearly release stage of a new <a href="https://github.com/Rene-AJM-Veerman/NicerApp-WebOS-5.10.z">stable version</a> of NicerApp WebOS is always Dec 1st - Dec 24th.<br/>
 A major upgrade of the documentation will happen well before Dec 1st 2025! :-)<br/>
 </p>
 
 <ol class="todoList" style="width:30%; width:content-width;">
-    <li class="todoList"><div><br/>
-    </div></li>
-    <li class="todoList"><div>(2024 to Dec 2025 at most) Merge the 5.9.z branch with the 6.y.z branch into the <a href="https://youtube.com/@Gavan-NL" class="nomod noPushState" target="fiveDotEightVids">5.10.z branch</a> because v5 is as high as I want to go before switching to marketing names or year-of-release numbers (probably the latter).</a>.
-        <ol class="todoList_l1">
-            <li class="todoList_l1"><div>how to run multiple web apps with changing DIV contents in a single tab</div></li>
-            <li class="todoList_l1"><div>(DONE) load web apps as a module into a DIV on demand (lazy loading of ThreeJS -240Kb- for instance)</div></li>
-            <li class="todoList_l1"><div>(DONE) do canvas animations of DIV borders</div></li>
-            <li class="todoList_l1"><div>display 3D content and menus without taking up too much screen real-estate (see <a href="https://nicer.app/3D-data" class="nomod noPushState" target="3dfm1">3D file manager on nicer.app</a> for a demo of a filetree browser in 3D, using ThreeJS)</div></li>
-            <li class="todoList_l1"><div>how to move DIV dialogs/windows in and out of view on a screen that may change it's orientation at any time, on demand.</div></li>.
-        </ol>
-    </li>
-
     <li class="todoList"><div>(2025) Fix the final bugs in vividMenu.onmouseover(), vividMenu.onmouseout(), theme handling and in the theme editor.</div></li>
-
-    <li class="todoList"><div>(2025) Fix the bugs in /me on said.by
-        <ol>
-            <li class="todoList"><div>(2025) On said.by (or in the /me content management subsystem of NicerApp WebOS), add business logic code to prevent URLs from being misrepresented to an end-user.</div></li>
-        </ol>
-    </div></li>
 
     <li class="todoList"><div>(2025) Add site registration options and login capabilities</div></li>
 

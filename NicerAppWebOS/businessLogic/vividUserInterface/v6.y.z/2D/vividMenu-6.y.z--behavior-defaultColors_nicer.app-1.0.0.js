@@ -32,11 +32,11 @@ class naVividMenu__behavior_defaultColors {
         t.theme = $(el).attr('theme');
         t.type = $(el).attr('type') === 'vertical' ? 'vertical' : 'horizontal';
         t.debugMe = false;
-        t.useDelayedShowingAndHiding = false;
+        t.useDelayedShowingAndHiding = true;
         t.useFading = true;
         t.fadingSpeed = 200;
         //t.sensitivitySpeed = 330;
-        t.sensitivitySpeedOpen = 1977; // ;-)
+        t.sensitivitySpeedOpen = 555; // ;-)
         t.sensitivitySpeedClose = 200;
         t.percentageFor_rainbowPanels =
             !na.site.settings.theme || na.site.settings.theme.menusUseRainbowPanels
@@ -50,6 +50,7 @@ class naVividMenu__behavior_defaultColors {
         t.timeout_showSubMenu = {};
         t.timeout_hideAll = {};
         t.timeout_hideSubMenu = {};
+        t.timeout_onmouseout = {};
         t.panelsShown = {};
 
         //t.initWatchFunctions(t);
@@ -124,6 +125,7 @@ class naVividMenu__behavior_defaultColors {
                         panel.it = t.el;
 
                         t.el.it = { parentDiv : t.el.parentNode };
+                        debugger;
                         if (r) {
                             $.delay (t.sensitivitySpeedOpen);
                             t.showPanel (
@@ -354,9 +356,9 @@ class naVividMenu__behavior_defaultColors {
             t.shownChildren[event.currentTarget.id] = event.currentTarget;
 
             if (t.useDelayedShowingAndHiding) {
-                /*for (var id in t.timeout_showSubMenu) {
+                for (var id in t.timeout_showSubMenu) {
                     clearTimeout (t.timeout_showSubMenu[id]);
-                };*/
+                };
 
                 if (t.debugMe) na.m.log (1120, 'naVividMenu.createVividButton() : bind("mouseover") : showing sub-menu for "'+it.label+'" after '+t.sensitivitySpeed+'ms.', false);
                 t.timeout_showSubMenu[it.idx] = setTimeout(function(t,idx,evt){
@@ -369,7 +371,6 @@ class naVividMenu__behavior_defaultColors {
                 if (t.debugMe) na.m.log (1120, 'naVividMenu.createVividButton() : bind("mouseover") : showing sub-menu for "'+it.label+'".', false);
 
                 t.onmouseover (event);
-
             }
         });
 
@@ -458,34 +459,39 @@ class naVividMenu__behavior_defaultColors {
             } else {
                 var container = $('div#'+t.el.id+'__panel__'+itp_idx)[0];
             };
-            $(container).css({
-                position : 'absolute',
-                display : 'block'   ,
-                width : '100%',
-                height : '100%',
-                left : p_bcr.left-tel_bcr.left+(it.level>2?$(it.b.el.el).width()*.7:10),
-                top : $(window).height() - 170 -  (p_bcr.height+na.d.g.margin)
-            });
-            $(':before', container).css ({
-                position : 'absolute',
-                top : 0,
-                left : 0,
-                background : "url('/NicerAppWebOS/siteMedia/backgrounds/tiled/orange/467781133_4f4354223e.jpg')",
-                opacity : 0.7
-            });
+
+            if (t.useDelayedShowingAndHiding) {
+                for (var id in t.timeout_showSubMenu) {
+                    clearTimeout (t.timeout_showSubMenu[id]);
+                };
+                if (t.timeout_onmouseout[parseInt(it.idx)]) clearTimeout (t.timeout_onmouseout[it.idx]);
+                t.timeout_onmouseout[parseInt(it.idx)] = setTimeout (function(t, evt) {
+                    var toHide = t.mustHide (t, t.currentEl.it, evt);
+                    if (t.currentEl.it.level > 1 || $(t.el).is('.noInitialShowing')) {
+                        na.m.log (1120, 'naVividMenu.onmouseout() : hiding sub-menu for "'+toHide.prevEl[0].it.label+'"', false);
+                        if (t.debugMe) debugger;
+                        if (
+                            toHide.currentEl.length>0
+                            || toHide.prevEl.length>0
+                        ) {
+                            t.onmouseout_do(evt, toHide);
+                        }
+                    }
+                }, t.sensitivitySpeedClose, t, event);
+            }
+
             if (!it.b.el.el.parentNode || it.b.el.el.parentNode.id!==container.id) {
                 $(it.b.el.el)
-                    .css ({display : 'none', opacity:1})
+                    .css ({display : 'block', opacity:1})
                     .appendTo(container);
                 //if (t.debugMe) na.m.log (1120, 'naVividMenu.showMenuItem() : placing "'+it.label+'"'+/*', parent.id=#'+it.b.el.el.parentNode.id+*/' into #'+container.id, false);
+                $(container).css({ width : 'fit-content', height: 'fit-content' });
+                $(container).css({ width : 'auto', height: 'auto' });
             }
-            var
-            numRows = (h/(($(it.b.el.el).height() + na.d.g.margin))  );
-
-
 
 
             var
+            numRows = (h/(($(it.b.el.el).height() + na.d.g.margin))  ),
             numColumns = Math.sqrt(numKids);
             if (Math.floor(numColumns)===0) numColumns = 1;
             //var numRows = Math.ceil(numKids/numColumns);
@@ -494,48 +500,8 @@ class naVividMenu__behavior_defaultColors {
             $(it.b.el.el).css({float:'left'});
             $(container).css ({ left : 10, width : ($(it.b.el.el).outerWidth() * Math.floor(numColumns)) +  (na.d.g.margin * Math.floor(numColumns)), height : 'auto' });
             var bcr = container.getBoundingClientRect();
-//             if (numRows===0) numRows = 1;
-//
-//             var
-//             row = 1,
-//             column = t.columnDisplayed,
-//             column2 = t.columnDisplayed,
-//             lidx = it.level === 1 ? it.levelIdx : it.levelIdx + 1 - (numRows * (column-1));
-//             //console.log ('t33a', column, it.levelIdx, lidx);
-//
-//             while (lidx > 0 && row <= numRows) {
-//                 row++;
-//                 lidx -= 1;
-//             }
-//             if (row > numRows) t.columnDisplayed++;
-//
-//
-//             var
-//             column = t.columnDisplayed;
-//             //console.log ('t334', t.columnDisplayed, column, row);
-//
-//             var
-//             owm = ($(it.b.el).outerWidth() + na.d.g.margin),
-//             offsetX =
-//                 dim.horDirection=='east'
-//                 ? p_bcr.left - (t.el.parentNode===document.body?tel_bcr.left:0) - (na.d.g.margin * ((column-1)))
-//                 : p_bcr.left - (t.el.parentNode===document.body?tel_bcr.left:0) - (na.d.g.margin * ((column-1)));
         } else {
             // first level of menu
-            /*
-            var
-            tel_bcr = t.el.getBoundingClientRect(),
-            offsetX = (
-                t.el.parentNode===document.body
-                || t.el.parentNode.id === t.el.parentNode.id+'_containerDiv'
-                ? na.d.g.margin * 2 * it.levelIdx
-                : 0//tel_bcr.left
-            ),
-            offsetY = tel_bcr.top - (it.b.el.offsetHeight/2) + (na.d.g.margin/2)  - ( ( $(t.el).parent().height() - $(it.b.el).height() ) / 2 ),
-            numRows = 1,
-            numColumns = $('#'+t.el.id+' > .vividMenu_mainUL > li').length,
-            row = 1,
-            column = it.levelIdx + 1,*/
             var
             container = $('#menu__'+t.el.id)[0];
 
@@ -547,42 +513,7 @@ class naVividMenu__behavior_defaultColors {
                 //if (t.debugMe) na.m.log (1120, 'naVividMenu.showMenuItem() : placing "'+it.label+'"'/*+', parent.id=#'+it.b.el.el.parentNode.id*/+' into #'+container.id, false);
                 $(it.b.el.el).css({display:'inline-block',position:'absolute'}).appendTo(container);
             }
-             //$(it.b.el).detach().appendTo(container);
-
         };
-        /*
-        it.row = row;
-        it.column = column;
-        it.numColumns = Math.floor(numColumns);
-        it.numRows = Math.ceil(numRows);
-
-        var
-        left = (
-            offsetX + (
-                t.type=='vertical'
-                ? it.level === 1
-                    ? 0
-                    : $(it.b.el).outerWidth() * 0.7
-                : it.level === 1
-                    ? ( $(it.b.el).outerWidth() + na.d.g.margin ) * (column)
-                    : it.level===2
-                        ? 0
-                        : ( $(it.b.el).outerWidth() * 0.7 * column ) + (2 * column * na.d.g.margin )
-            )
-        ),
-        top = (
-            offsetY + (
-                t.type=='vertical'
-                ? 0
-                : it.level === 1
-                    ? 0
-                    : na.d.g.margin + ( ( $(t.prevDisplayedEl).height() + (2*na.d.g.margin) ) * (row - 1) )
-            )
-        ),
-        tpde_bcr = t.prevDisplayedEl ? t.prevDisplayedEl.getBoundingClientRect() : { top : 0, left : 0 },
-        tpade_bcr = it.parents && it.parents[0] ? p_bcr : { top : 0, left : 0 },
-        top = (it.parents&&it.parents[0]&&itp ? itp.level==1 ? offsetY + tpde_bcr.top : itp.level>=1 ? tpde_bcr.top + tpde_bcr.height : 0 : 0) + na.d.g.margin,
-        */
         var
         position = (
             it.b.el.el.parentNode===document.body
@@ -732,6 +663,18 @@ class naVividMenu__behavior_defaultColors {
         $(panel).css( { height : 'auto' });
         $(panel).bind('mouseover', function (event) {
             t.cancelHidings(t);
+
+            // cancel showings too!
+            for (var elIdx in t.timeout_showSubMenu) {
+                if (typeof elIdx === 'number') {
+                    var
+                    it2 = t.items[elIdx],
+                    to = t.timeout_showSubMenu[elIdx];
+                    clearTimeout(to);
+                }
+            }
+            t.timeout_showSubMenu = {};
+
             //debugger;
             $('#'+t.el.id+'__backPanel').remove();
             t.showBackPanel(t, t.currentEl);
