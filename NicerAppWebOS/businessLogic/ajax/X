@@ -1,8 +1,0 @@
-HTTP/1.1 200 OK
-Cache-Control: must-revalidate
-Content-Length: 85
-Content-Type: application/json
-Date: Tue, 25 Nov 2025 14:57:01 GMT
-Server: CouchDB/3.5.1 (Erlang OTP/26)
-Set-Cookie: AuthSession=c2FpZF9ieV9fX0phbnRqZTo2OTI1QzNCRDqM3m9txMXyROO20yXbX_7U5SRWP37PZySHPCyyliOceg; Version=1; Expires=Tue, 25-Nov-2025 15:07:01 GMT; Max-Age=600; Path=/; HttpOnly
-
