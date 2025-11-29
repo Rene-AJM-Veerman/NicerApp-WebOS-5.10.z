@@ -196,9 +196,11 @@ export class na3D_fileBrowser {
         t.far = 144000000 * t.radius;
         t.v = { controls : 4 };
         t.maxcontrols = 10;
-        t.vtext = { controls : [ "None", "Arcball", "Drag", "FirstPerson", "Fly", "Orbit", "PointerLock", "Trackball", "Transform", "Undefined"]};
+        t.vtext = { controls : [ "None", "Arcball", "Drag", "FirstPerson", "Fly", "Orbit", "Camera", "PointerLock", "Trackball", "Transform", "Undefined"]};
         t.controlsKey = 5;
         t.controlsValue = t.vtext.controls[t.controlsKey];
+        t.controls = t.zapitem(t.controls);
+        t.createcontrols(t, t.evt3);
 
         t.ctrlcamera = {
             position: new THREE.Vector3(),
@@ -282,16 +284,6 @@ export class na3D_fileBrowser {
         t.clock = new THREE.Clock();
         t.lookClock = -1;
 
-        /*
-        t.orbitControls = new OrbitControls( t.camera, t.renderer.domElement );
-        t.orbitControls.enabled = true;
-        t.orbitControls.position0.x = 0;
-        t.orbitControls.position0.y = 0;
-        t.orbitControls.position0.z = 15000;
-        //t.controls.listenToKeyEvents( window ); // optional
-        */
-
-
         setTimeout(function() {
             t.initializeItems (t);
             //t.initializeFolderList (t, t.data);
@@ -356,6 +348,15 @@ export class na3D_fileBrowser {
                 });
 
 
+                /* OUTDATED : replaced with .createcontrols()
+                 *
+                t.orbitControls = new OrbitControls( t.camera, t.renderer.domElement );
+                t.orbitControls.enabled = true;
+                t.orbitControls.position0.x = 0;
+                t.orbitControls.position0.y = 0;
+                t.orbitControls.position0.z = 15000;
+                //t.orbitControls.listenToKeyEvents( window ); // optional
+
                 t.controls = new CameraControls (t.camera, t.renderer.domElement);
                 t.controls._camera.position.x = 0;
                 t.controls._camera.position.y = 0;
@@ -381,7 +382,8 @@ export class na3D_fileBrowser {
                 t.flyControls.dragToLook = true;
                 t.flyControls.rollSpeed = Math.PI / 4; // default is 0.005
                 t.flyControls.autoMove = true;
-            }, 250);
+                */
+            }, 200);
             /*
             na.m.waitForCondition("animate(2)?", function() {
                 return t.winners;
@@ -466,6 +468,7 @@ export class na3D_fileBrowser {
     }
 
     createcontrols(t, e) {
+        debugger;
         if (!t.camera) {return;};
         switch (t.controlsKey) {
             case 0: break;
@@ -480,15 +483,17 @@ export class na3D_fileBrowser {
                 t.controls = new FlyControls(t.camera, t.renderer.domElement);
                 t.controls.enabled = true;
                 t.controls.dragToLook = true;
-                t.controls.pointerdown ($.extend({button:0},e));
-                t.controls.object.lookAt (new THREE.Vector3( 0, 0, 1000))
+                //t.controls.pointerdown ($.extend({button:0},e));
+                //t.controls.object.lookAt (new THREE.Vector3( 0, 0, 1000))
                 t.controls.movementSpeed = 2000; t.controls.rollSpeed = -1 * 0.015;
                 //t.camera.position.set(t.middle.x, t.middle.y, t.middle.z);
                 //t.camera.object.lookAt(t.middle.x, t.middle.y, t.middle.z);
                 t.renderer.domElement.addEventListener("pointerdown", function () {
+                    t.controlsKey = 6;
                     t.atPointerDown(t, event)
                 }, {passive: false});
                 t.renderer.domElement.addEventListener("pointerup", function() {
+                    t.controlsKey = 5;
                     t.atPointerUp(t, event)
                 }, {passive: false});
                 document.addEventListener("keydown", function() {
@@ -496,9 +501,58 @@ export class na3D_fileBrowser {
                 }, {passive: false});
                 break;
             case 5:
+                var doMe = false;
                 t.controls = new OrbitControls(t.camera, t.renderer.domElement);
+                if (t.controls && t.controls._camera) {
+                    var tar = t.controls._targetEnd.clone();
+                    //tar.set(0,0,-1).applyQuaternion(t.camera.quaternion).add(t.camera.position);
+                    debugger;
+                    doMe = true;
+                };
                 t.controls.enabled = true;
+                /*
+                t.controls.object.position.x = t.cameraOrigin.x;
+                t.controls.object.position.y = t.cameraOrigin.y;
+                t.controls.object.position.z = t.cameraOrigin.z;
+                if (doMe) {
+                    t.controls.target.x = tar.x;
+                    t.controls.target.y = tar.y;
+                    t.controls.target.z = tar.z;
+                }*/
+                if (doMe)
+                t.controls.setLookAt (
+                    t.cameraOrigin.x,
+                    t.cameraOrigin.y,
+                    t.cameraOrigin.z,
+                    tar.x,
+                    tar.y,
+                    tar.z,
+                    false
+                );
                 t.controls.addEventListener("change", function(e) {t.render(t);});
+                break;
+            case 6:
+                var initMe = t.controls && typeof t.controls._camera=='undefined';
+                t.controls = new CameraControls (t.camera, t.renderer.domElement);
+                t.controls.enabled = true;
+                /*
+                debugger;
+                if (initMe) {
+                    t.controls._camera.position.x = 0;
+                    t.controls._camera.position.y = 0;
+                    t.controls._camera.position.z = 20*1000;
+                    t.controls._target.x = 0;
+                    t.controls._target.y = 0;
+                    t.controls._target.z = 0;
+                    t.controls._targetEnd.x = 0;
+                    t.controls._targetEnd.y = 0;
+                    t.controls._targetEnd.z = 0;
+
+                    t.controls._target0.x = 0;
+                    t.controls._target0.y = 0;
+                    t.controls._target0.z = 0;
+                }
+                */
                 break;
         };
     }
@@ -646,12 +700,15 @@ export class na3D_fileBrowser {
         t.controls.movementSpeed += 50;
 
         var changed = false, timeLapsed = t.clock.getElapsedTime(), y = t.evt3;
-        if (timeLapsed>0.5 && t.controlsKey!==4 && t.evt3 && t.evt3.type=='pointerdown' && (t.evt3.button===0||t.evt3.button===2)) {
-            t.controlsKey = 4;
-            changed = true;
-        } else if (t.controlsKey!==5 && t.evt3 && t.evt3.type=='pointerup' && (t.evt3.button===0 || t.evt3.button===2)) {
-            t.controlsKey = 5;
-            changed = true;
+        if (t.controlsKey!==6) {
+            if (timeLapsed>0.5 && t.controlsKey!==4 && t.evt3 && t.evt3.type=='pointerdown' && (t.evt3.button===0||t.evt3.button===2)) {
+                debugger;
+                t.controlsKey = 4;
+                changed = true;
+            } else if (t.controlsKey!==5 && t.evt3 && t.evt3.type=='pointerup' && (t.evt3.button===0 || t.evt3.button===2)) {
+                t.controlsKey = 5;
+                changed = true;
+            };
         };
         if (changed) {
             //console.log ('t.animate() : changed = true');
@@ -661,7 +718,8 @@ export class na3D_fileBrowser {
         }
 
         $('#site3D_controls_key').html(t.vtext.controls[t.controlsKey]);
-        t.animate_OLD_AND_WITH_ANGLE_BUG(t,e);
+        //t.animate_OLD_AND_WITH_ANGLE_BUG(t,e);
+        //debugger;
         t.update(t);
         t.render(t);
     }
@@ -872,6 +930,7 @@ export class na3D_fileBrowser {
         t.renderer.render( t.scene, t.camera );
     }
 
+    /*
     animate_OLD_AND_BUGGY (t, p) {
         //setTimeout(function() {
             //requestAnimationFrame( function(p) { t.animate (t,p) });
@@ -929,7 +988,7 @@ export class na3D_fileBrowser {
             if (t.flyControls.movementSpeed > 0 && t.flyControls.movementSpeed < 1250)
                 t.flyControls.movementSpeed += 50;
 
-            if (t.orbitControls.enabled/* && t.middle && t.middle.x*/) {
+            if (t.orbitControls.enabled/* && t.middle && t.middle.x* /) {
                 //t.orbitControls.target.set(t.middle.x, t.middle.y, t.middle.z);
                 t.orbitControls.update(t.flyControls.object.quaternion);
                 t.flyControls.object.position.x = t.orbitControls.object.position.x;
@@ -1106,7 +1165,7 @@ export class na3D_fileBrowser {
                                 +"("+parent.object.it.columnOffsetValue+","
                                 +parent.object.it.rowOffsetValue+","
                                 +parent.object.it.depthOffsetValue+")<br/>";
-                            */
+                            * /
                             parent = parent.parent;
                         }
 
@@ -1123,7 +1182,7 @@ export class na3D_fileBrowser {
                             name : $("#site3D_label")[0].textContent,
                             left : t.mouse.layerX + 20,
                             top : t.mouse.layerY + 20
-                        });*/
+                        });* /
                     } else {
                         //t.orbitControls.enabled = true;
                         t.renderer.domElement.className = "";
@@ -1146,14 +1205,24 @@ export class na3D_fileBrowser {
         
         t.renderer.render( t.scene, t.camera );
     }
+    */
 
     rotate (event, t) {
+        t.controlsKey = 6;
+        t.controls = t.zapitem(t.controls);
+        t.createcontrols(t, t.evt3);
         t.pathAnimation.play(0);
     }
     rotate2 (event, t) {
+        t.controlsKey = 6;
+        t.controls = t.zapitem(t.controls);
+        t.createcontrols(t, t.evt3);
         t.pathAnimation2.play(0);
     }
     rotate3 (event, t) {
+        t.controlsKey = 6;
+        t.controls = t.zapitem(t.controls);
+        t.createcontrols(t, t.evt3);
         t.pathAnimation3.play(0);
     }
 
@@ -1189,9 +1258,11 @@ export class na3D_fileBrowser {
         t.orbitControls.enabled = true;
 
         // adjust camera position
-        t.orbitControls.object.position.x = t.flyControls.object.position.x;
-        t.orbitControls.object.position.y = t.flyControls.object.position.y;
-        t.orbitControls.object.position.z = t.flyControls.object.position.z;
+        if (false) {
+            t.orbitControls.object.position.x = t.flyControls.object.position.x;
+            t.orbitControls.object.position.y = t.flyControls.object.position.y;
+            t.orbitControls.object.position.z = t.flyControls.object.position.z;
+        }
 
         // adjust view angle
         var tar = t.controls._targetEnd.clone();
@@ -1203,12 +1274,15 @@ export class na3D_fileBrowser {
             .add(t.camera.position);
         */
 
-        t.orbitControls.target.x = tar.x;
-        t.orbitControls.target.y = tar.y;
-        t.orbitControls.target.z = tar.z;
+        if (false) {
+            t.orbitControls.target.x = tar.x;
+            t.orbitControls.target.y = tar.y;
+            t.orbitControls.target.z = tar.z;
+        }
 
 
         //if (t.useCameraControls)
+        if (false)
         t.controls.setLookAt (
             t.flyControls.object.position.x,
             t.flyControls.object.position.y,
@@ -1235,8 +1309,10 @@ export class na3D_fileBrowser {
         let maxCamDist = 3;//your maximum camera distance from the target
 
         //on update/animate
-        t.camera.position.setFromSphericalCoords(maxCamDist, rad90 + t.camera.rotation.x, t.camera.rotation.y);
-        t.camera.position.add(tar);
+        if (false) {
+            t.camera.position.setFromSphericalCoords(maxCamDist, rad90 + t.camera.rotation.x, t.camera.rotation.y);
+            t.camera.position.add(tar);
+        }
 
         /*
         t.flyControls.enabled = true;
@@ -1483,7 +1559,7 @@ export class na3D_fileBrowser {
             cd.params.t.ld3[it.idxPath].items.push (it);
             //cd.params.idxPath2 = cd.params.idxPath + "/" + it1a.idx;
             cd.params.t.items.push (it);
-            console.log ('initializeFolderView_walkKey() : '+cd.params.t.items.length+' items initialized.')
+            //console.log ('initializeFolderView_walkKey() : '+cd.params.t.items.length+' items initialized.')
 
             // display files :
             if (cd.params.t.showFiles && it.data.files)
@@ -2324,25 +2400,34 @@ export class na3D_fileBrowser {
                 };
             */
 
-                var mx = -1, my = -1, mz = -1, mpx = 500, mpy = 500, mpz = 1500, msx = 500, msy = 500, msz = 500;
-                var mrx = 33, mry = 33, mrz = 34;
+                if (!mx) var mx = 1;
+                if (!my) var my = 1;
+                if (!mz) var mz = 1;
+                var mpx = 500, mpy = 500, mpz = 1500, msx = 500, msy = 500, msz = 500;
+                var mrx = 32, mry = 32, mrz = 32;
                 var rx = 1, ry = 1, rz = 1;
+                if (!prx) var prx = rx;
+                if (!pry) var pry = ry;
+                if (!prz) var prz = rz;
                 if (prevIt) {
                     if (prevIt.filepath.replace(/folders\//g,'')!==it.filepath.replace(/folders\//g,'')) {
-                        rx += mrx * Math.random();
-                        ry += mry * Math.random();
-                        rz = mrz * Math.random();
+                        prx = rx;
+                        pry = ry;
+                        prx = rz;
+                        rx = prx + mrx * Math.random();
+                        ry = pry + mry * Math.random();
+                        rz = prz + mrz * Math.random();
                         prevIt = it;
                     };
                 } else {
                     prevIt = it;
                 }
                 if (p) {
-                    if (p.columnOffsetValue>0) mx = 1;
-                    if (p.rowOffsetValue>0) my = 1;
-                    if (p.depthOffsetValue>0) mz = 1;
+                    if (p.columnOffsetValue<0) mx = -1 * mx;
+                    if (p.rowOffsetValue<0) my = -1 * my;
+                    if (p.depthOffsetValue<0) mz = -1 * mz;
                 }
-                mx = 1; my = 1; mz = 1;
+                //mx = 1; my = 1; mz = 1;
 
 
                 // calculate folders' and files' x,y,z position in the scene
@@ -2382,8 +2467,8 @@ export class na3D_fileBrowser {
 
                               : 0
                             )
-                            //+ (it.level * mpz)
-                            + (it.depth * msz)
+                            + (it.level * mpz)
+                            //+ (it.depth * msz)
                             //+ (it.depthOffsetValue * mpz)
                         )
 
@@ -2425,8 +2510,8 @@ export class na3D_fileBrowser {
 
                               : 0
                             )
-                            //+ (it.level * mpz)
-                            + (it.depth * msz)
+                            + (it.level * mpz)
+                            //+ (it.depth * msz)
                             //+ (it.depthOffsetValue * mpz)
                         )
                     //debugger;
@@ -2690,9 +2775,9 @@ export class na3D_fileBrowser {
         };
         var
         tf = t.winners.behind + Math.round((t.winners.behind - t.winners.front) / 2),
-        ol = 10 * 1000,
-        numPoints = 720,
-        radius = 10*1000;
+        ol = 20 * 1000,
+        numPoints = 730,
+        radius = 20*1000;
         t.middle = {
             x : Math.round((t.winners.west + t.winners.east) / 2),
             y : Math.round((t.winners.north + t.winners.south) / 2),
@@ -2700,14 +2785,29 @@ export class na3D_fileBrowser {
         };
         //t.flyControls.object.lookAt (new THREE.Vector3( t.middle.x, t.middle.y, t.middle.z));
 
-        t.cameraOrigin = {
-            x : t.middle.x,
-            y : t.middle.y,
-            z : t.middle.z * 5
-        };
+        if (!t.started4) {
+            debugger;
+            t.cameraOrigin = {
+                x : t.middle.x,
+                y : t.middle.y,
+                z : radius
+            };
+
+            t.controlsKey = 6;
+            t.controls = t.zapitem(t.controls);
+            t.createcontrols(t, t.evt3);
+            t.controls.setLookAt (
+                t.cameraOrigin.x, t.cameraOrigin.y, t.cameraOrigin.z, 0,0,0,false
+            )
+
+            t.controlsKey = 5;
+            t.controls = t.zapitem(t.controls);
+            t.createcontrols(t, t.evt3);
+        }
 
 
-        if (true && !t.curve1b) {
+
+        if (!t.curve1b) {
             console.log ("t778", t.winners, t.middle);
 
             t.curve1b = new THREE.CatmullRomCurve3( [ // in effect, this is calls up a 'tweening engine'.
@@ -2718,7 +2818,7 @@ export class na3D_fileBrowser {
                 new THREE.Vector3 (t.winners.east + ol, 0, ol),
                 new THREE.Vector3 (0, 0, ol),
             ]);
-            var first = last = {x:0,y:0,z:-ol};
+            var first = last = {x:0,y:0,z:ol};
             t.points1b = t.curve1b.getPoints(numPoints);
             t.curves1a = [
                 new THREE.Vector3(t.cameraOrigin.x,t.cameraOrigin.y,t.cameraOrigin.z),
@@ -2840,12 +2940,7 @@ export class na3D_fileBrowser {
                         if ( ! this.isActive() ) return;
 
                         t.curve1.getPoint ( value, t._tmp );
-                        if (t.controls._camera) {
-                            t.controls._camera.position.x = t._tmp.x;
-                            t.controls._camera.position.y = t._tmp.y;
-                            t.controls._camera.position.z = t._tmp.z;
-                        }
-                /*t.controls.setLookAt(
+                        t.controls.setLookAt(
                             t._tmp.x,
                             t._tmp.y,
                             t._tmp.z,
@@ -2854,14 +2949,16 @@ export class na3D_fileBrowser {
                             t.middle.z,
                             false, // IMPORTANT! disable cameraControls"s transition and leave it to gsap.
                         );
-                */
 
                     },
                     onStart() {
                         t.animPlaying = true;
                     },
-                    onComplete() {
+                    onComplete(e) {
                         t.animPlaying = false;
+                        t.controlsKey = 5;
+                        t.controls = t.zapitem(t.controls);
+                        t.createcontrols(t, t.evt3);
                         t.onresize_postDo(t);
                     }
                 }
@@ -2903,6 +3000,9 @@ export class na3D_fileBrowser {
                     },
                     onComplete() {
                         t.animPlaying = false;
+                        t.controlsKey = 5;
+                        t.controls = t.zapitem(t.controls);
+                        t.createcontrols(t, t.evt3);
                         t.onresize_postDo(t);
                     }
                 }
@@ -2942,6 +3042,9 @@ export class na3D_fileBrowser {
                     },
                     onComplete() {
                         t.animPlaying = false;
+                        t.controlsKey = 5;
+                        t.controls = t.zapitem(t.controls);
+                        t.createcontrols(t, t.evt3);
                         t.onresize_postDo(t);
                     }
                 }
