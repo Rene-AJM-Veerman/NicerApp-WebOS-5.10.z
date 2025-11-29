@@ -270,6 +270,10 @@ class NicerAppWebOS {
             try {
                 $this->dbs = new class_NicerAppWebOS_database_API ('Guest');
             } catch (Exception $e) {
+                echo '<pre>';
+                echo $fncn.' : Throwable $error=';//.json_encode($error,JSON_PRETTY_PRINT);;
+                var_dump ($e);
+                echo '</pre>';
                 $this->dbsAdmin->findConnection('couchdb')->createGuestUser();
             }
             try {

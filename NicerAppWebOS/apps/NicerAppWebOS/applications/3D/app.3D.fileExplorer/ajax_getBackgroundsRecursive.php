@@ -16,14 +16,15 @@
         $root = $naRoot.'/NicerAppWebOS/siteMedia/backgrounds/landscape';
         $root =   realpath(dirname(__FILE__).'/../../../../../../../nicer.app-musicPlayer-music');
         //var_dump ($root); die();
-        $fileFormats = '/.*/';
+        $fileFormats = '/\.mp3$/';
         global $fileFormats;
         $excl = '/.*thumbs.*/';
         global $excl;
-        $f = getFilePathList ($root, false, $fileFormats, $excl, array('dir','file'), 2, 1, true);
-        //echo '<pre style="color:blue;">'; var_dump ($root); var_dump ($f); echo '</pre>';
+        //$f = getFilePathList ($root, true, $fileFormats, $excl, array('dir','file'), null, 1, true);
+        $f = getFilePathList ($root, true, $fileFormats, $excl, array('dir'), null, 1, true);
         $f = getFileDetails ($f);
-        //echo '<pre style="color:red;">'; var_dump ($root); var_dump ($f); echo '</pre>';
+        //echo '<pre style="color:green;">'; var_dump ($root); echo '</pre><pre style="color:blue;">'; echo json_encode($f,JSON_PRETTY_PRINT); echo '</pre>'; die();
+
         $mi[] = [
             'root' => str_replace($rootPath_na, '', $root),
             'thumbnails' => './thumbs',
@@ -55,9 +56,8 @@
         global $debug;
         $k = &$cd['k'];
         $v = &$cd['v'];
-        //if ($k=='files') {echo '<pre style="color:blue">'; var_dump ($cd); echo '</pre>';}
 
-        // TODO : might be needed.
+        // condense the data :
         //if ($k=='files') $v = array_keys ($v);
     }
 

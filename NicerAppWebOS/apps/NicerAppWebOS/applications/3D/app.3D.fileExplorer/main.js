@@ -2,7 +2,6 @@
   AmbientLight,
   AnimationMixer,
   AxesHelper,
-  Box3,
   Cache,
   CubeTextureLoader,
   DirectionalLight,
@@ -34,7 +33,7 @@ import { RGBELoader } from '/NicerAppWebOS/3rd-party/3D/libs/three.js/examples/j
 import { DragControls } from '/NicerAppWebOS/3rd-party/3D/libs/three.js/examples/jsm/controls/DragControls.js';
     
     import { na3D_fileBrowser }
-		from '/NicerAppWebOS/logic.vividUserInterface/v6.y.z/3D/na3D.js';
+		from '/NicerAppWebOS/businessLogic/vividUserInterface/v6.y.z/3D/na3D.js';
 		
     //$(document).ready(function() {
         setTimeout (function() {
@@ -74,7 +73,6 @@ import { DragControls } from '/NicerAppWebOS/3rd-party/3D/libs/three.js/examples
                                 na.m.log (1555, fncn+' : BEGIN decode '+data.length+' bytes, url='+url);
                                 var parameters = { views : [ JSON.parse(data) ] };
                                 na.m.log (1555, fncn+' : END decode '+data.length+' bytes, url='+url);
-                                debugger;
 
                                 na.site.settings.na3D= {
                                     '#app_3D_fileExplorer' : new na3D_fileBrowser(el, $(el).parent()[0], parameters)

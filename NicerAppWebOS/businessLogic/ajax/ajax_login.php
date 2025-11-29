@@ -40,13 +40,25 @@ $username1 = preg_replace('/.*___/', '', $username);
 $_SESSION['cdb_pw'] = $_POST['pw'];
 
 try {
-    $cdb_authSession_cookie = $cdb->login($username, $_POST['pw'], Sag::$AUTH_COOKIE);
+    //$cdb_authSession_cookie = $cdb->login($username, $_POST['pw'], Sag::$AUTH_COOKIE);
+
+    $xec = 'curl -vD - -X POST http://'.$username.':'.$_POST['pw'].'@127.0.0.1:5984/_session -d \'name='.$username.'&password='.$_POST['pw'].'\'';
+    exec ($xec, $output, $result);
+    //echo '<pre>'; var_dump ($xec); echo PHP_EOL; var_dump ($output);
+    preg_match_all('/=(.*?);/', $output[6], $output2);
+    //var_dump ($output2);
+    //echo '</pre>'.PHP_EOL;
+    setcookie ('cdb_authSession_cookie', $output2[1][0], strtotime($output2[1][2]), '/', 'said.by');
+    setcookie ('cdb_loginName', $username, strtotime($output2[1][2]), '/', 'said.by');
+    $_SESSION['cdb_loginName'] = $username;
+
 } catch (Exception $e) {
     echo 'status : Failed.<br/>'.PHP_EOL;
     echo '$cdbDomain."___".$username='.$username.', $e->getMessage() = '.$e->getMessage();
     exit();
 }
 
+/*
 $dbName = $cdbDomain.'___cms_tree___user___'.strtolower($username1);
 //var_dump ($dbName); var_dump($_POST);
 
@@ -93,7 +105,7 @@ if ($callOK) {
     the requird data (per app) can still be decrypted with the plaintext password based hash value[1],
     and then re-encrypted with the new $_COOKIE['cdb_authSession_cookie'] that is the result of
     a call to ajax_login.php with the plaintext password.
-    */
+    * /
     if (array_key_exists('REMEMBERME',$_COOKIE)) { //echo 1;
         global $rememberMe;
         //if (!empty($_POST['rememberme'])) { echo 'a';
@@ -110,7 +122,7 @@ if ($callOK) {
             $rememberMe->clearCookie();
 
             recrypt ($_POST['loginName'], $_POST['pw'], $cdb_authSession_cookie);
-        */
+        * /
             $_SESSION['cdb_authSession_cookie'] = $cdb_authSession_cookie;
             setcookie('cdb_authSession_cookie', $cdb_authSession_cookie, time() + 604800, '/'); // 604800 = 7 days measured in seconds (cookie timeout length)
         //}
@@ -125,9 +137,9 @@ if ($callOK) {
     //$_SESSION['cdb_pw'] = $_POST['pw'];
     //var_dump (empty($_POST['rememberme'])); echo PHP_EOL;
     //var_dump ($_COOKIE);
-
+*/
     echo 'status : Success';
-} else {
-    echo 'status : Failed';
-}
+//} else {
+  //  echo 'status : Failed';
+//}
 ?>

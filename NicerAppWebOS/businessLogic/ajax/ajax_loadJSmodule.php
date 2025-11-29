@@ -1,6 +1,6 @@
 <?php
 header('Content-type: text/javascript');
-$rt = realpath(dirname(__FILE__).'/../..');
+$rt = realpath(dirname(__FILE__).'/../../..');
 require_once ($rt.'/NicerAppWebOS/boot.php');
 
 $js = file_get_contents($rt.$_GET['file']);
