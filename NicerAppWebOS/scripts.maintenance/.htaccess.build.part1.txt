@@ -196,7 +196,7 @@ Options +FollowSymLinks
             ##RewriteCond %{REQUEST_FILENAME} !-f
             ##RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_METHOD} ^(GET)$
-    RewriteRule ^$ NicerAppWebOS/index.php?viewID=/ [L]
+    RewriteRule ^$ index.php?viewID=/ [L]
 
     RewriteCond %{REQUEST_METHOD} ^(GET)$
     RewriteRule ^nc$ NicerAppWebOS/index.php?uvt=n&lc=n&viewID=/ [L]
