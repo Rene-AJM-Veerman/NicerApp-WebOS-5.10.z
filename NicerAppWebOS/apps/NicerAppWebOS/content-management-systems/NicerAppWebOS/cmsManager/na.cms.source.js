@@ -23,6 +23,7 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
                         na.site.settings.app = 'applications/content-management-systems/NicerAppWebOS/cmsManager';
 
                         $('#siteContent > .vividDialogContent, #siteToolbarLeft > .vividDialogContent').css({opacity:1,display:'none'}).fadeIn('slow');
+                        $('#siteToolbarLeft > .vdTools > #btnComments').remove();
                         $('#btnAddUser_menu').css({display:'none'});
 
                         $('#siteContent__header').fadeIn('normal', function () {
@@ -548,8 +549,8 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
                     src = (
                         na.cms.settings.current.mediaFolderView == 'upload'
                         //? '/NicerAppWebOS/3rd-party/plupload-2.3.6/examples/jquery/jquery_ui_widget.php?c='+na.m.changedDateTime_current()+/*'&smID='+siteManager.id+'&iid='+iid+'&dialogID='+did+* /'&basePath='+path
-                        ? '/NicerAppWebOS/logic.vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery_ui_widget.2.3.7.php?basePath='+path
-                        : '/NicerAppWebOS/logic.vividUserInterface/v5.y.z/photoAlbum/4.0.0/index.php?basePath='+path+'&photoAlbum_emptyFolderPage=/NicerAppWebOS/logic.vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery_ui_widget.2.3.7.php'
+                        ? '/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery_ui_widget.2.3.7.php?basePath='+path
+                        : '/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/index.php?basePath='+path+'&photoAlbum_emptyFolderPage=/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery_ui_widget.2.3.7.php'
                     ),
                     el = $('#jQueryFileUpload')[0];
                     el.onload = na.cms.onresize;
@@ -626,7 +627,7 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
                                     || na.cms.settings.current.selectedTreeNode.type == 'naMediaAlbum'
                                 )
                             );
-                            debugger;
+                            //debugger;
                             return r;
                         },
                         function () {
@@ -702,12 +703,10 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
 
                             if ($('#siteContent .vividDialogContent').width() < 400) {
                                 $('#document_navBar .navbar_section').not('.shown').css({ display : 'none' });
-                                $('#btnSettingsHeaders, #btnTree').css({display:'block'});
-                            } else {
-                                $('#document_navBar .navbar_section').not('.shown').css({ display : 'inline-block' });
-                                $('#btnSettingsHeaders, #btnTree').css({display:'none'});
                             }
 
+
+/*
                             if ($('#btnTree').css('display')!=='none') {
                                 var w = $('#document_navBar').width() - $('#btnTree').position().left - 60;
                                 $('#nb_documentLabel').css({
@@ -715,14 +714,14 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
                                     width : w,
                                     maxWidth : 300
                                 });
-                            } else {
+                            } else {*/
                                 var w = $('#document_navBar').width() - $('#btnPublish').position().left - 60;
                                 $('#nb_documentLabel').css({
                                     minWidth : 120,
                                     width : w,
                                     maxWidth : 300
                                 });
-                            }
+                            //}
 
                             /*if ($('#nb_url0').position().left < $('#btnPublish').position().left) {
                                 var w = $('#document_navBar').width() - $('#nb_url2_value').position().left - 10;
@@ -762,7 +761,7 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
                                 });
                             };
 
-                            $('.navbar_section').css({margin:0,marginBottom:4});
+                            na.site.startUIvisuals();
 
                             if (
                                 typeof settings == 'object'
@@ -1292,7 +1291,7 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
 
         tmce.windowManager.open({
             title : 'Insert Photo Album',
-            url : '/NicerAppWebOS/logic.vividUserInterface/v5.y.z/photoAlbum/4.0.0/index.all.php',
+            url : '/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/index.all.php',
             width : 570,
             height: 700
         });
@@ -1317,12 +1316,12 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
     onclick_mediaThumbnail : function (evt, basePath, filename) {
         var 
         arr = {
-            misc : {
-                folder : '/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS'
-            },
-            cmsViewMedia : {
-                basePath : basePath,
-                filename : filename
+            '/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS' : {
+                cmsViewMedia : {
+                    appFolder : '/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS',
+                    basePath : basePath,
+                    filename : filename
+                }
             }
         },
         base64 = na.m.base64_encode_url(JSON.stringify(arr));
@@ -1336,9 +1335,9 @@ na.apps.loaded['/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/Nic
         path = path.replace(/ /g, '%20'),
         src = (
             na.cms.settings.current.mediaFolderView == 'upload'
-            //? '/NicerAppWebOS/3rd-party/plupload-2.3.6/examples/jquery/jquery_ui_widget.php?changed='+na.m.changedDateTime_current()+/*'&smID='+siteManager.id+'&iid='+iid+'&dialogID='+did+*/'&basePath='+path
-            ? '/NicerAppWebOS/logic.vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery_ui_widget.2.3.7.php?basePath='+path
-            : '/NicerAppWebOS/logic.vividUserInterface/v5.y.z/photoAlbum/4.0.0/index.php?basePath='+path
+            //? '/NicerAppWebOS/3rd-party/plupload-2.3.6/examples/jquery/jquery_ui_widget.php?c='+na.m.changedDateTime_current()+/*'&smID='+siteManager.id+'&iid='+iid+'&dialogID='+did+* /'&basePath='+path
+            ? '/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery_ui_widget.2.3.7.php?basePath='+path
+            : '/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/index.php?basePath='+path+'&photoAlbum_emptyFolderPage=/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery_ui_widget.2.3.7.php'
         ),
         el = $('#jQueryFileUpload')[0];
         el.onload = na.cms.onresize;

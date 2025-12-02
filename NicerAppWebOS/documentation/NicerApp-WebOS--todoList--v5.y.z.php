@@ -27,7 +27,9 @@ A major upgrade of the documentation will happen well before Dec 1st 2025! :-)<b
 
     <li class="todoList"><div>(2025) Start doing daily testruns of all apps and features.</div></li>
 
-    <li class="todoList"><div>(2026 to 2027) Complete a 3D folders + files structures viewer, linked to all sorts of 2D user interface components/widgets.</div></li>
+    <li class="todoList"><div>(2026) Build a color progressbar into the background of the photo album upload component that I use.</div></li>
+
+    <li class="todoList"><div>(2026 to 2027) Complete a <a href="/demo-3D-fileBrowser">3D folders + files structures viewer</a>, linked to all sorts of 2D user interface components/widgets.</div></li>
 
     <li class="todoList"><div>(2026) Add a log viewer dialog, for both console, server, for the current PHP session, to all browsers.<br/>
     Add "Admin" option to view the logs of others within a given datetimestamp range.</div></li>

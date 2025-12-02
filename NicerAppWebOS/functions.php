@@ -315,7 +315,7 @@ function processBackgroundFile_value ($cd) {
             }
             //if ($cd['k']=='path') {
                 if ( $debugMe) {
-                    $result = bindec(hex2bin('678'));
+                    $result = bindec(hex2bin('1977'));
                 } else {
                     $xec = 'identify "'.$file.'"';
                     exec ($xec, $output, $result);

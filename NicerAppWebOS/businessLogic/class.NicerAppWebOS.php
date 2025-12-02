@@ -44,7 +44,6 @@ class NicerAppWebOS {
         $this->about = json_decode (file_get_contents(dirname(__FILE__).'/../version.json'));
         //echo '<pre style="color:purple;">'; var_dump($_GET); echo '</pre>';
         //echo '<pre style="color:red;">'; var_dump($_SERVER); echo '</pre>';
-
         $this->baseIndentLevel = 1;
 
         $p1 = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR);
@@ -56,11 +55,8 @@ class NicerAppWebOS {
             $p2c = str_replace($p2b.DIRECTORY_SEPARATOR,'', $p2a);
             $this->path = $p2b;
             $this->domainFolder = basename($_SERVER['DOCUMENT_ROOT']);//str_replace($p2a.DIRECTORY_SEPARATOR,'', $p2b);
-            $p3 = $this->domain = explode('-', $p2c);
-            // TODO : Document this in .../README.md
-            $this->domain = str_replace('/var/www/','',$p3[0]);
+            $this->domain = $_SERVER['SERVER_NAME'];
             $this->webPath = $p2b;
-            //var_dump($this->webPath); die();
         } else {
             $p2b = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..');
 	    $this->path = $p2b;
@@ -578,8 +574,12 @@ class NicerAppWebOS {
                                         }
                                     }
                         } else {
-                            //var_dump ($view);
-                            //var_dump (array_key_exists('appFolder',$view));
+                            if ($debug) {
+                                echo '<pre style="margin:10px;padding:10px;border-radius:10px;background:rgba(0,0,50,0.7);color:ivory;text-shadow:2px 2px 3px rgba(0,0,0,0.8);">';
+                                var_dump ($view);
+                                var_dump (array_key_exists('appFolder',$view));
+                                echo '</pre>';
+                            }
                             if (array_key_exists('appFolder',$view)) $viewsFolder = $this->webPath.$view['appFolder'];
                             else foreach ($view as $appFolder => $app) {
                                 //echo '<pre>'; var_dump ($app); echo '</pre>'; //die();
@@ -590,11 +590,17 @@ class NicerAppWebOS {
                             }
                             //var_dump($viewsFolder);
                             foreach ($view as $viewsFolder2 => $viewSettings) {
+                                foreach ($viewSettings as $appFolder => $appSettings) break;
                                 //dangerous, don't remember why i put this in here atm :
                                 //$dbInitPHP = $this->basePath.'/'.$viewsFolder.'/db_init.php';
                                 //if (file_exists($dbInitPHP)) execPHP ($dbInitPHP);
-                                $files = getFilePathList ($this->basePath.$viewsFolder2, false, '/app\.dialog\..*/', null, array('file'), 1, 1, true);
-                                if ($debug) { echo '<pre style=";color:purple;background:cyan;">'; var_dump ($viewsFolder); var_dump ($files); echo '</pre>'; }
+                                if (is_dir($this->domainPath.$viewsFolder2.'/'.$appFolder))
+                                    $files = getFilePathList ($this->domainPath.$viewsFolder2.'/'.$appFolder, false, '/app\.dialog\..*/', null, array('file'), 1, 1, true);
+                                else
+                                    $files = getFilePathList ($this->domainPath.$viewsFolder2, false, '/app\.dialog\..*/', null, array('file'), 1, 1, true);
+                                //$debug = true;
+                                if ($debug) { echo '<pre style=";color:purple;background:cyan;">'; var_dump ($this->domainPath.$viewsFolder2); var_dump ($files); echo '</pre>'; }
+                                //$debug = false;
                                 if (!array_key_exists('files', $files)) {
                                     $msg = 'HTTP error 404 : no files matching app.* in "'.$viewsFolder.'"';
                                     echo $msg;

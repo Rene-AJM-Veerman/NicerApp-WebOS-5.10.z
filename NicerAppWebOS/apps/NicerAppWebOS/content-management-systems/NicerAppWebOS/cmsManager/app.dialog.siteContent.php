@@ -24,7 +24,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
 <link type="text/css" rel="StyleSheet" href="/domainConfig/<?php echo $naWebOS->domainFolder; ?>/index.dark.css?c=<?php echo date('Ymd_His',filemtime(realpath(dirname(__FILE__).'/../../../../..').'/domainConfigs/'.$naWebOS->domainFolder.'/index.dark.css'))?>">
 -->
 <script type="text/javascript" src="/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS/cmsManager/na.cms.source.js?c=<?php echo date('Ymd_His',filemtime(dirname(__FILE__).'/na.cms.source.js'));?>"></script>
-<script type="text/javascript" src="/NicerAppWebOS/logic.userInterface/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js?c=<?php echo date('Ymd_His',filemtime($naWebOS->basePath.'/NicerAppWebOS/logic.userInterface/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js'));?>"></script>
+<script type="text/javascript" src="/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js?c=<?php echo date('Ymd_His',filemtime($naWebOS->domainPath.'/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js'));?>"></script>
 
 <script type="text/javascript" src="/NicerAppWebOS/3rd-party/tinymce-4.9.11/js/tinymce/tinymce.js"></script>
 <script type="text/javascript" src="/NicerAppWebOS/3rd-party/tinymce-4.9.11/js/tinymce/jquery.tinymce.min.js"></script>
@@ -91,7 +91,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         '',
         '',
 
-        403, 'Add user',
+        421, 'Add user',
 
         'btnCssVividButton_outerBorder.png',
         null,//'btnCssVividButton.yellow4a.png',
@@ -112,7 +112,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         '',
         '',
 
-        403, 'Add user',
+        422, 'Insert media',
 
         'btnCssVividButton_outerBorder.png',
         null,//'btnCssVividButton.yellow4a.png',
@@ -133,7 +133,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         '',
         '',
 
-        403, 'Add page background',
+        423, 'Add page background',
 
         'btnCssVividButton_outerBorder.png',
         null,//'btnCssVividButton.yellow4a.png',
@@ -156,7 +156,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
 <?php
     global $naWebOS;
     echo $naWebOS->html_vividButton (
-        1, 'width:100%;height:50px;',
+        1, '',
 
         'btnPublish',
         'vividButton_icon_50x50 grouped navbar_button', '_50x50', 'grouped',
@@ -165,7 +165,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         '',
         '',
 
-        403, 'Publish',
+        431, 'Publish',
 
         'btnCssVividButton_outerBorder.png',
         null,//'btnCssVividButton.yellow4a.png',
@@ -176,8 +176,9 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
 
         null, null, null
     );
+    /*
     echo $naWebOS->html_vividButton (
-        1, 'width:100%;height:50px;',
+        1, '',
 
         'btnSettingsHeaders',
         'vividButton_icon_50x50 grouped navbar_button', '_50x50', 'grouped',
@@ -186,7 +187,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         '',
         '',
 
-        403, 'Edit headers',
+        432, 'Edit headers',
 
         'btnCssVividButton_outerBorder.png',
         null,//'btnCssVividButton.yellow4a.png',
@@ -198,7 +199,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         null, null, null
     );
     echo $naWebOS->html_vividButton (
-        1, 'width:100%;height:50px;',
+        1, '',
 
         'btnTree',
         'vividButton_icon_50x50 grouped navbar_button', '_50x50', 'grouped',
@@ -207,7 +208,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         '',
         '',
 
-        403, 'Tree',
+        433, 'Tree',
 
         'btnCssVividButton_outerBorder.png',
         null,//'btnCssVividButton.yellow4a.png',
@@ -218,6 +219,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
 
         null, null, null
     );
+    */
 
 ?>
 

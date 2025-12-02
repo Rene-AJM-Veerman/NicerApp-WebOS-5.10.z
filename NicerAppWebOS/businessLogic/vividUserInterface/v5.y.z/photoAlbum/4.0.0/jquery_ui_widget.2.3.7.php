@@ -6,7 +6,7 @@
 <title>Plupload - jQuery UI Widget</title>
 
 <!--<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" />-->
-<link rel="stylesheet" href="/NicerAppWebOS/logic.userInterface/photoAlbum/4.0.0/jquery.ui.plupload.2.3.7.css" type="text/css" />
+<link rel="stylesheet" href="/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/jquery.ui.plupload.2.3.7.css" type="text/css" />
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>

@@ -29,8 +29,8 @@ if (false) {
     echo '</pre>';
 };
 if (
-    $naLAN
-    || ((array_key_exists('pw',$_GET)
+    /*$naLAN
+    ||*/ ((array_key_exists('pw',$_GET)
             && (
                 $_GET['pw']=='efv7750'
                 || $_GET['pw']=='xmas2025ai-d'

@@ -1,5 +1,7 @@
 <?php
 require_once (realpath(dirname(__FILE__).'/../../../../..').'/boot.php');
+global $naWebOS;
+$cdb = $naWebOS->dbs->findConnection('couchdb')->cdb;
 
 if (!array_key_exists('database',$_POST)) {
     $dbg = [
@@ -15,9 +17,6 @@ if (
 
 
 
-global $naWebOS;
-$cdb = $naWebOS->dbs->findConnection('couchdb')->cdb;
-
 $cdb->setDatabase(str_replace('_documents_', '_tree_', $_POST['database']),false);
 $doc = array (
     'database' => str_replace('_documents_', '_tree_', $_POST['database']),
@@ -26,7 +25,7 @@ $doc = array (
 );
 try { $call = $cdb->get ($_POST['id']); } catch (Exception $e) { cdb_error (404, $e, 'Could not find record'); exit(); };
 
-$root = realpath(dirname(__FILE__).'/../../../').'/siteData/'.$naWebOS->domainFolder.'/';
+$root = $naWebOS->domainPath.'/siteData/'.$naWebOS->domain.'/';
 $path = $root.$_POST['currPath'];
 $xec = 'rm -rf "'.$path.'"';
 exec ($xec, $output, $result);

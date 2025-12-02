@@ -1,18 +1,18 @@
 <?php
-    $root = realpath(dirname(__FILE__).'/../../../../');
+    $root = realpath(dirname(__FILE__).'/../../../../../../');
     require_once ($root.'/NicerAppWebOS/boot.php');
 
     global $naDebugAll;
-    $debug = false;
+    $debug = true;
 
     global $naWebOS;
 //trigger_error (realpath(dirname(__FILE__).'/../../../').'/domainConfigs/'.$naWebOS->domainFolder.'/index.dark.css', E_USER_NOTICE);
     if (!array_key_exists('relPath1', $_GET)) {
-        $baseURL = '/NicerAppWebOS/siteData/'.$naWebOS->domainFolder.'/';
-        $baseDir = $root.'/NicerAppWebOS/siteData/'.$naWebOS->domainFolder.'/';
+        $baseURL = '/siteData/'.$naWebOS->domainFolder.'/';
+        $baseDir = $naWebOS->domainPath.'/siteData/'.$naWebOS->domainFolder.'/';
     } else {
         $baseDir = $_GET['relPath1'];
-        $rt = realpath(dirname(__FILE__).'/../../../../');
+        $rt = realpath(dirname(__FILE__).'/../../../../../../');
         $baseURL = str_replace($rt, '', $baseDir);
     }
 
@@ -22,6 +22,14 @@
 
 
     $targetDir = $baseDir.$_GET['basePath'];
+    /*
+    $targetDir =
+        realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'../../../siteData/')
+        .DIRECTORY_SEPARATOR.$naWebOS->domainFolder.DIRECTORY_SEPARATOR.$_GET['basePath']
+        .$relativePath;*/
+
+    $relativePath = $_GET['basePath'];
+    //onzin? $targetDir = $naWebOS->domainPath.'/siteData/'.$relativePath;
     $thumbDir = $targetDir.'/thumbs/300';
     if (!file_exists($thumbDir)) $thumbDir = $targetDir.'/thumbs';
 //var_dump ($targetDir);exit();
@@ -47,7 +55,7 @@ if (!array_key_exists('noIframe', $_GET) || $_GET['noIframe']===false) {
     <style></style>
     <link type="text/css" rel="StyleSheet" href="/domainConfig/<?php echo $naWebOS->domainFolder?>/index.css?c=<?php echo date('Ymd_His',filemtime(realpath(dirname(__FILE__).'/../../../').'/domainConfigs/'.$naWebOS->domainFolder.'/index.css'))?>">
     <link type="text/css" rel="StyleSheet" href="/domainConfig/<?php echo $naWebOS->domainFolder?>/index.dark.css?c=<?php echo date('Ymd_His',filemtime(realpath(dirname(__FILE__).'/../../../').'/domainConfigs/'.$naWebOS->domainFolder.'/index.dark.css'))?>">
-    <script type="text/javascript" src="/NicerAppWebOS/logic.userInterface/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js?c=<?php echo date('Ymd_His', filemtime(dirname(__FILE__).'/../../../logic.userInterface/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js'));?>"></script>
+    <script type="text/javascript" src="/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js?c=<?php echo date('Ymd_His', filemtime($naWebOS->domainPath.'/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js'));?>"></script>
 <?php
 } else {
 ?>
@@ -86,7 +94,8 @@ if (!array_key_exists('noIframe', $_GET) || $_GET['noIframe']===false) {
     if ($debug && false) { echo '<pre style="color:black;background:white;border-radius:3px;border:1px solid black;">'; var_dump ($dbg); echo '</pre>'; }
     if (is_string($msg)) echo $msg.'<br/>';
     foreach ($files as $idx => $filePath) {
-        $fileName = str_replace ($targetDir.'/', '', $filePath);
+        $fileName = str_replace ($targetDir.'/', '', $filePath['webPath']);
+        //echo '<pre style="margin:10px;padding:10px;border-radius:10px;border:1px solid grey;background:rgba(0,0,0,0.7);color:skyblue">'; var_dump ($thumbDir); var_dump ($fileName); var_dump ($filePath); echo '</pre>';
         $thumbPath = $thumbDir.'/'.$fileName;
         $thumbURL = str_replace ($baseDir, $baseURL, $thumbPath);
         $fileURL = str_replace ($baseDir, $baseURL, $filePath);
@@ -103,7 +112,7 @@ if (!array_key_exists('noIframe', $_GET) || $_GET['noIframe']===false) {
         echo '<div style="overflow:hidden;display:inline-block;width:140px;height:auto;margin:5px;padding:10px;padding-top:20px;border-radius:10px;border:1px solid black;background:rgba(0,0,0,0.7);box-shadow:2px 2px 2px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(0,0,255,0.5), inset -1px -1px 1px rgba(0,0,255,0.5);">';
         
         
-        $onclick = 'onclick="na.cms.onclick_mediaThumbnail(event, \''.$_GET['basePath'].'\', \''.$fileName.'\');"'; // gets overridden by the Theme Editor for it's backgrounds selection procedures.
+        $onclick = 'onclick="window.top.na.cms.onclick_mediaThumbnail(event, \''.$_GET['basePath'].'\', \''.$fileName.'\');"'; // gets overridden by the Theme Editor for it's backgrounds selection procedures.
         
         echo '<center><img src="'.$thumbURL.'" class="mediaThumb" style="width:134px" '.$onclick.'/><br/><span class="filename">'.$fileName.'</span></center></div>';
     }

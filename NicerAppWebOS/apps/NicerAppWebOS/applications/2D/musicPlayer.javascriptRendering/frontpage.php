@@ -1,4 +1,8 @@
 <?php
+    // public vars :
+    $rescanContent = false;
+
+    // private vars & code :
     $rootPath_vkdmd = realpath(dirname(__FILE__).'/../../../../../..');
     //echo $rootPath_vkdmd; die();
     require_once ($rootPath_vkdmd.'/NicerAppWebOS/boot.php');
@@ -18,12 +22,11 @@
     $idxStart = 0;
     if (array_key_exists('idxStart', $_GET)) $idxStart = intval($_GET['idxStart']);
     global $naLAN;
-
     //var_dump($rf); die();
     $read = false;
     $collectionDurationInSeconds = 0;
     $pageDurationInSeconds = 0;
-    if (file_exists(dirname(__FILE__).'/index.views.json') && (!array_key_exists('rc',$_GET) || $_GET['rc']!=='true')) {
+    if ((!$rescanContent && file_exists(dirname(__FILE__).'/index.views.json')) || (!array_key_exists('rc',$_GET) || $_GET['rc']!=='true')) {
     //if (!$naLAN && file_exists(dirname(__FILE__).'/index.views.json') && (!array_key_exists('rc',$_GET) || $_GET['rc']!=='true')) {
         // ONLY SLOWS THINGS DOWN CONSIDERABLY $folders = json_decode(file_get_contents($rf.'/index.foldersAndFiles.json'),true);
         $views = json_decode(file_get_contents(dirname(__FILE__).'/index.views.json'),true);
@@ -119,6 +122,57 @@
         }
     };
     if (!$read) file_put_contents(dirname(__FILE__).'/index.views.json', json_encode($views));
+
+    $rescanContent = false; // not really cheating when you're bypassing 10 minutes worth of mp3info exec() calls
+    if ($rescanContent) {
+        function arrayWalk_key_buildMenu ($cd) {
+            global $naWebOS;
+
+            $ki = $cd['params']['i'];
+            $cd['params']['i']++;
+            $t = 0;
+            $views = &$cd['params']['views'];
+            $urls = &$cd['params']['urls'];
+            $html = &$cd['params']['html'];
+            if ($ki<1) return false;
+
+            foreach ($views[$ki-1][$ki] as $af => &$vs) {
+                break;
+            }
+
+            $doUL = false;
+            if (is_array($cd['v'])) {
+                $doUL = true;
+                $cd['level']++;
+            };
+
+            if ($doUL) {
+                $html .= $naWebOS->html($cd['level'], '<ul>');//<li><a href="'.$href.'">'.$cd['k'].'</a></li><ul>'.PHP_EOL;
+            } else {
+                $html .= $naWebOS->html($cd['level'], '</ul></li>');
+            }
+
+            $html .= $naWebOS->html($cd['level'], '<li><a href="'.$urls[$ki].'">'.$vs['rp'].'</a>');
+        }
+
+        $folders = getFilePathList ($rf,true,'/.*/',null,['dir'], null, null, true);
+        echo '<pre style="color:yellow;font-size:small;">'; var_dump ($folders); echo '</pre>';
+        $keyCount = 0;
+        $valueCount = 0;
+        $html = '<li><a href="/music?pw='.$_GET['pw'].'">Music</a><ul>';
+        $params = array (
+            'debugMe' => true,
+            'a' => &$folders,
+            'i' => 1,
+            'keyCount' => &$keyCount,
+            'valueCount' => &$valueCount,
+            'urls' => &$urls,
+            'views' => &$views,
+            'html' => &$html
+        );
+        walkArray ( $folders, 'arrayWalk_key_buildMenu', null, false, $params );
+        file_put_contents(dirname(__FILE__).'/mainmenu.liOnly.php', $params['html'].'</ul></li></ul></li></ul>');
+    }
 
     //echo '<pre>'; var_dump($views); die();
     //echo '<pre>'; var_dump($urls); die();

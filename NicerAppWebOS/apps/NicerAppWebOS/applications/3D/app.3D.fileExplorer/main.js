@@ -104,7 +104,7 @@ import { DragControls } from '/NicerAppWebOS/3rd-party/3D/libs/three.js/examples
                     + '<div id="rotate3" class="vividButton" theme="dark" style="position:relative;" onclick="for (var id in na.site.settings.na3D) { var td = na.site.settings.na3D[id]; td.rotate3(event,td); }">Rotate III</div>'
                     +'<div id="showLines" class="vividButton" theme="dark" style="position:relative;" onclick="for (var id in na.site.settings.na3D) { var td = na.site.settings.na3D[id]; td.toggleShowLines(); }">Show Lines</div>'
                     +'</div>';
-                $('#siteToolbarRight .vividDialogContent').html (html);
+                //$('#siteToolbarRight .vividDialogContent').html (html);
 
 
 

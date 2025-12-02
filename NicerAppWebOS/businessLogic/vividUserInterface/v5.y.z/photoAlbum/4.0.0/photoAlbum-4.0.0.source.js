@@ -36,7 +36,7 @@ if (!na.photoAlbum) na.photoAlbum = {
         } else {
             if (w>iframeWidth) {
                 th = jQueryImg.css({top:0,width:iframeWidth,height:''}).delay(50).height();
-                tw = jQueryImg.width();
+                tw = jQsueryImg.width();
                 s.zoomPercentage = (th*100) / h;
             } else if (h>iframeHeight) {
                 tw = jQueryImg.css({width:'',left:0,height:iframeHeight}).delay(50).width();
@@ -53,6 +53,7 @@ if (!na.photoAlbum) na.photoAlbum = {
             }
                 
         };
+        jQueryImg.css ({position:'absolute'});
         s.minZoom = s.zoomPercentage;
         
         setTimeout(na.photoAlbum.updateZoom,200);
@@ -189,11 +190,10 @@ if (!na.photoAlbum) na.photoAlbum = {
             width : tw,
             height : th
         };
-        debugger;
 
-        setTimeout(function(pos2) {
+        //setTimeout(function(pos2) {
             jQueryImg.css (pos2);
-        }, 200, pos2);
+        //}, 100, pos2);
         $('#naPhotoAlbum__control__naturalWidth').html ( 'Original\'s width : ' + s.naturalWidth);
         $('#naPhotoAlbum__control__naturalHeight').html ( 'Original\'s height : ' + s.naturalHeight);
         $('#naPhotoAlbum__control__width').html ( 'Width : ' + s.tw);

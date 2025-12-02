@@ -16,8 +16,8 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
 <div id="jsTree_navBar" style="height:auto;">
     <div id="btnAddUser_menu" class="vividMenu noInitialShowing" style="display:none;position:absolute;height:100px; z-index:800000" type="vertical">
     <ul id="btnAddUser_menu_ul" class="vividMenu_mainUL" style="display:none;">
-        <li><a href="javascript:na.ugm.onclick_btnAddUser(event)" class="noPushState">Add</a></li>
-        <li><a href="javascript:na.ugm.onclick_btnRemoveUser(event)" class="noPushState">Remove</a></li>
+        <li><a href="javascript:na.cms.onclick_btnAddUser(event)" class="noPushState">Add</a></li>
+        <li><a href="javascript:na.cms.onclick_btnRemoveUser(event)" class="noPushState">Remove</a></li>
     </ul>
     </div>
     <div style="display:flex">
@@ -29,7 +29,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         'btnAddUser',
         'vividButton_icon_50x50 grouped btnOptions', '_50x50', 'grouped',
         '',
-        'na.ugm.onclick_btnAddUser(event)',
+        'na.cms.onclick_btnAddUser(event)',
         'na.site.c.menus[\'#btnAddUser_menu\'].showMenu(null, true)',
         '',
 
@@ -50,7 +50,7 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
         'btnAddGroup',
         'vividButton_icon_50x50 grouped btnOptions', '_50x50', 'grouped',
         '',
-        'na.ugm.onclick_btnAddGroup(event)',
+        'na.cms.onclick_btnAddGroup(event)',
         '',
         '',
 

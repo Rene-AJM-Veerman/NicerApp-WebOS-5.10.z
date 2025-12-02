@@ -1,5 +1,5 @@
 <?php
-require_once (realpath(dirname(__FILE__).'/../../../..').'/NicerAppWebOS/boot.php');
+require_once (realpath(dirname(__FILE__).'/../../../../../../').'/NicerAppWebOS/boot.php');
 /**
  * upload.php
  *
@@ -14,7 +14,7 @@ require_once (realpath(dirname(__FILE__).'/../../../..').'/NicerAppWebOS/boot.ph
 #!! this file is just an example, it doesn't incorporate any security checks and 
 #!! is not recommended to be used in production environment as it is. Be sure to 
 #!! revise it and customize to your needs.
-//die("Make sure that you enable some form of authentication before removing this line.");
+//exit("Make sure that you enable some form of authentication before removing this line.");
 
 
 // Make sure file is not cached (as it happens for example on iOS devices)
@@ -42,19 +42,24 @@ global $naWebOS;
 global $filePerms_ownerUser; 
 global $filePerms_ownerGroup;
 global $filePerms_perms;
+global $filePerms_perms_publicWriteableExecutable;
 
-$debug = true;
+$debug = false;
 
 // Settings
-$relativePath = array_key_exists('relativePath',$_POST) ? DIRECTORY_SEPARATOR.$_POST['relativePath'] : '';
+$relativePath = array_key_exists('basePath',$_GET) ? $_GET['basePath'].(array_key_exists('relativePath', $_POST)?$_POST['relativePath']:'') : '';
 $relativePath = rtrim($relativePath, '/');
 if ($debug) { echo '$relativePath='; var_dump ($relativePath); echo PHP_EOL.PHP_EOL; }
 
+/*
 $targetDir = 
-        realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'../siteData/')
+        realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'../../../siteData/')
         .DIRECTORY_SEPARATOR.$naWebOS->domainFolder.DIRECTORY_SEPARATOR.$_GET['basePath']
-        .$relativePath;
-if ($debug) { echo '$targetDir='; var_dump ($targetDir); echo PHP_EOL.PHP_EOL; }
+        .$relativePath;*/
+
+//var_dump ($naWebOS->domain); die();
+$targetDir = $naWebOS->domainPath.'/siteData/'.$naWebOS->domain.'/'.$relativePath;
+if ($debug) { echo '$targetDir='; var_dump ($targetDir); echo PHP_EOL.PHP_EOL; exit(); }
     
 $fileName = $_POST['name'];
 $fileNameParts = pathinfo ($_POST['name']);
@@ -64,7 +69,7 @@ if (
     && strtolower($extension) !== 'jpeg'
     && strtolower($extension) !== 'gif'
     && strtolower($extension) !== 'png'
-) die ('{"jsonrpc" : "2.0", "error" : {"code": 403, "message": "Illegal filename."}, "id" : "id"}');
+) exit ('{"jsonrpc" : "2.0", "error" : {"code": 403, "message": "Illegal filename."}, "id" : "id"}');
 $filePath = $targetDir.DIRECTORY_SEPARATOR.$fileName;
 $thumbPath = $targetDir.DIRECTORY_SEPARATOR.'thumbs'.DIRECTORY_SEPARATOR . $fileName;
 if ($debug) var_dump ($thumbPath);
@@ -74,7 +79,7 @@ if (
     && file_exists($thumbPath)
 ) {
     // send file-already-exists error JSON-PRC flag back to browser
-    die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "File already exists."}, "id" : "id"}');
+    exit('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "File already exists."}, "id" : "id"}');
 }
 
 createDirectoryStructure (dirname($filePath), $filePerms_ownerUser, $filePerms_ownerGroup, $filePerms_perms_publicWriteableExecutable);
@@ -107,7 +112,7 @@ $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 if ($cleanupTargetDir) {
     //echo '$targetDir='; var_dump ($targetDir); echo PHP_EOL.PHP_EOL;
 	if (!is_dir($targetDir) || !$dir = opendir($targetDir)) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
+		exit('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
 	}
 
 	while (($file = readdir($dir)) !== false) {
@@ -131,21 +136,21 @@ if ($cleanupTargetDir) {
 if ($debug) { var_dump ("{$filePath}.part"); echo PHP_EOL.PHP_EOL; }
 if ($chunks ===0) unlink($filePath.'.part');
 if (!$out = @fopen("{$filePath}.part", $chunks ? "ab" : "wb")) {
-	die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+	exit('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 }
 
 if (!empty($_FILES)) {
 	if ($_FILES["file"]["error"] || !is_uploaded_file($_FILES["file"]["tmp_name"])) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+		exit('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
 	}
 
 	// Read binary input stream and append it to temp file
 	if (!$in = @fopen($_FILES["file"]["tmp_name"], "rb")) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+		exit('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 	}
 } else {	
 	if (!$in = @fopen("php://input", "rb")) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+		exit('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 	}
 }
 
@@ -193,7 +198,7 @@ if (!$chunks || $chunk == $chunks - 1) {
 	$dbg = [ '$exec' => $exec, '$output' => $output, '$result' => $result ];
 	if ($debug) { echo 'convert : $dbg='; var_dump ($dbg); echo PHP_EOL.PHP_EOL; }
 	
-    if (is_string($filePerms_ownerUser)) $x = chown ($filePath, $filePerms_ownerUser);
+    //if (is_string($filePerms_ownerUser)) $x = chown ($filePath, $filePerms_ownerUser);
     if (is_string($filePerms_ownerGroup)) $y = chgrp ($filePath, $filePerms_ownerGroup);
     if (is_numeric($filePerms_perms)) $z = chmod ($filePath, $filePerms_perms);
     if ($debug) {
@@ -206,7 +211,7 @@ if (!$chunks || $chunk == $chunks - 1) {
         echo '$filePath::$dbg='; var_dump($dbg); echo PHP_EOL.PHP_EOL;
     };
 
-    if (is_string($filePerms_ownerUser)) $x = chown ($thumbPath, $filePerms_ownerUser);
+    //if (is_string($filePerms_ownerUser)) $x = chown ($thumbPath, $filePerms_ownerUser);
     if (is_string($filePerms_ownerGroup)) $y = chgrp ($thumbPath, $filePerms_ownerGroup);
     if (is_numeric($filePerms_perms)) $z = chmod ($thumbPath, $filePerms_perms);
     if ($debug) {
@@ -223,5 +228,5 @@ if (!$chunks || $chunk == $chunks - 1) {
 
 
 // Return Success JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+exit('{"jsonrpc" : "2.0", "result" : "success", "id" : "id"}');
 ?>

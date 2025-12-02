@@ -1175,8 +1175,6 @@ na.site = {
             History.pushState (null, '', document.location.origin+'/view/'+url);
         } else debugger;
 
-        debugger;
-        na.site.startUIvisuals();
         event.preventDefault();
     },
 
@@ -1383,7 +1381,7 @@ na.site = {
 
                     if (url3.match(/\/view-content\//)) {
                         var
-                        url4 = url2.replace(document.location.origin,'').replace(document.location.host,'').replace('/view_content/', ''),
+                        url4 = url2.replace(document.location.origin,'').replace(document.location.host,'').replace('view_content/', ''),
                         app = JSON.parse(na.m.base64_decode_url(url4));
                     } else {
                         var
@@ -1685,12 +1683,14 @@ na.site = {
         //if (typeof startLogo=='function') startLogo('neCompanyLogo', 'countryOfOriginColors');
 
         $('.vividDialog'/*, vdc[0]*/).each(function(idx,el){
+            if (na.site.c.dialogs['#'+el.id]) delete na.site.c.dialogs['#'+el.id];
             if (!na.site.c.dialogs['#'+el.id]) na.site.c.dialogs['#'+el.id] = new vividUserInterface_2D_dialog({naSite:na.site,el:el});
         });
         $('#siteContent > .vividDialogContent').css({scale:1});
 
 
         $('.vividButton4, .vividButton, .vividButton_icon_50x50_siteTop, .vividButton_icon_50x50').each(function(idx,el){
+            if (na.site.c.buttons['#'+el.id]) delete na.site.c.buttons['#'+el.id];
             if (!na.site.c.buttons['#'+el.id]) {
                 na.site.c.buttons['#'+el.id] = new vividUserInterface_2D_button(el);
             };
@@ -1847,6 +1847,7 @@ na.site = {
                         $('.vividButton4, .vividButton, .vividButton_icon_50x50_siteTop, .vividButton_icon_50x50', vdc).each(function(idx,el) {
                             delete na.site.c.buttons['#'+el.id];
                         });
+                        na.site.startUIvisuals();
                         na.site.settings.running_loadContent = false;
                         vdc.show();
                         if (na.site.settings.url.match('/wiki/')) {

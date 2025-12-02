@@ -131,8 +131,8 @@ class naVividMenu__behavior_defaultColors {
                             setTimeout(function(t, panel, r, x1) {
                                 t.showPanel (
                                     t, event, panel, r.it, {idx : t.el.id, b : { el : t.el }}, r.dim, r.numColumns, (r.numKids / r.numColumns),
-                                    $(x1.it.b.el).offset().left - $(t.el).offset().left,
-                                    $(x1.it.b.el).offset().top - $(t.el).offset().top
+                                    $(x1.it.b.el.el).offset().left - $(t.el).offset().left,
+                                    $(x1.it.b.el.el).offset().top - $(t.el).offset().top
                                 );
                             }, t.sensitivitySpeedOpen, t, panel, r, x1);
                         }
@@ -221,6 +221,14 @@ class naVividMenu__behavior_defaultColors {
                 if (!t.children[t.el.id]) t.children[t.el.id] = [];
                 t.children[t.el.id].push(it);
                 it.levelIdx = t.children[t.el.id].length;
+            } else if (it && it.parent && it.parent.id==='') {
+                var
+                itp_idx = parseInt(it.li.id.replace(/.*__/,'')),
+                itp = t.items[itp_idx];
+                if (!itp) debugger;
+                if (!t.children[itp.idx]) t.children[itp.idx] = [];
+                t.children[itp.idx].push(it);
+                it.levelIdx = t.children[itp.idx].length;
             } else if (it && it.parent) {
                 var
                 itp_idx = parseInt(it.parent.id.replace(/.*__/,'')),
@@ -1214,8 +1222,10 @@ class naVividMenu__behavior_defaultColors {
         elDiv   = event.currentTarget,
         elIdMorphed = elDiv.id.replace('siteMenu__','siteMenu__li__'),
         el = $('#'+elIdMorphed)[0],
-        myKids = t.children[el.parent?el.parent.el.id:elDiv.idx];
+        myKids = t.children[el.parent?el.parent.el.id:elDiv.it.idx];
+
         //debugger;
+
         if (myKids && myKids.sort)
             myKids = myKids.sort(function(a,b){ return a.label - b.label; });
 
@@ -1236,8 +1246,9 @@ class naVividMenu__behavior_defaultColors {
         t.timeout_onmouseover[el.it.idx] = setTimeout(function(t, el, evt) {
             if (t.debugMe) na.m.log (1120, 'naVividMenu.onmouseover() : showing sub-menu for "'+el.it.label+'"', false);
 
-            t.prevDisplayedEl = t.currentEl.el;
-            t.currentDisplayedEl = t.currentEl.el;//evt.currentTarget;
+            t.prevDisplayedEl = t.currentEl.el || t.currentEl;
+            t.currentDisplayedEl = t.currentEl.el || t.currentEl;//evt.currentTarget;
+            debugger;
             t.currentDisplayedEl_negativeOffsetY = null;
 
             var

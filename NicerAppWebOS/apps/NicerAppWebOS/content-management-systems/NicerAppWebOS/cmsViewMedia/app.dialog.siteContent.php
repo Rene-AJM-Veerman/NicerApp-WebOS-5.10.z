@@ -40,11 +40,12 @@ try { $call = $cdb->get ($view['cmsText']['id']); } catch (Exception $e) { echo 
 echo $call->body->document;
 */
 
-$fn = $view['cmsViewMedia']['filename'];
+foreach ($view as $viewFolder => $viewSettings) break;
+$fn = $view[$viewFolder]['cmsViewMedia']['filename'];
 
-if (substr($view['cmsViewMedia']['basePath'],0,1)!=='/') {
-    $baseURL = '/NicerAppWebOS/siteData/'.$naWebOS->domainFolder.'/';
-    $baseDir = $root.'/NicerAppWebOS/siteData/'.$naWebOS->domainFolder.'/';
+if (substr($view[$viewFolder]['cmsViewMedia']['basePath'],0,1)!=='/') {
+    $baseURL = 'siteData/'.$naWebOS->domainFolder.'/';
+    $baseDir = $naWebOS->domainPath.'/siteData/'.$naWebOS->domainFolder.'/';
 } else {
     if (
         !array_key_exists('relPath1',$_GET)
@@ -57,8 +58,8 @@ if (substr($view['cmsViewMedia']['basePath'],0,1)!=='/') {
     $rt = realpath(dirname(__FILE__).'/../../../../../..');
     $baseURL = str_replace($rt, '', $baseDir);
 }
-$targetDir = $baseDir.$view['cmsViewMedia']['basePath'].'/';
-$targetURL = $baseURL.$view['cmsViewMedia']['basePath'].'/';
+$targetDir = $baseDir.$view[$viewFolder]['cmsViewMedia']['basePath'].'/';
+$targetURL = $baseURL.$view[$viewFolder]['cmsViewMedia']['basePath'].'/';
 
 $dbg = array (
     'baseURL' => $baseURL,
@@ -68,54 +69,80 @@ $dbg = array (
     'fn' => $fn,
     'view' => $view
 );
-//echo '<pre>'.json_encode($dbg,JSON_PRETTY_PRINT).'</pre>';
+//echo '<pre>'.json_encode($dbg,JSON_PRETTY_PRINT).'</pre>'; //exit();
 
 $files = getFilePathList ($targetDir, false, FILE_FORMATS_photos, null, array('file'), 1, 1, false);
+//echo '<pre>'; var_dump ($files); echo '</pre>';
 
 foreach ($files as $idx => $file) {
     $prev = '';
     $next = '';
-    if (basename($file)===$fn) {
-        $prev = $idx > 1 ? $files[$idx-1] : $files[count($files)-1];
-        $next = $idx < count($files) - 1 ? $files[$idx+1] : $files[0];
+    $path = $file['webPath'];
+    if (basename($path)===$fn) {
+        $prev = $idx > 1 ? $files[$idx-1]['webPath'] : $files[count($files)-1]['webPath'];
+        $next = $idx < count($files) - 1 ? $files[$idx+1]['webPath'] : $files[0]['webPath'];
 
         $dbg = [
-            'bn' => basename($file),
+            'bn' => basename($path),
             'fn' => $fn,
             'prev' => $prev,
             'next' => $next
         ];
         //echo '<pre>'; var_dump ($dbg); echo '</pre>'; die();
         $prevArr = array (
-            "misc" => [ "folder" => "/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS" ],
-            'cmsViewMedia' => array (
-                'basePath' => $view['cmsViewMedia']['basePath'],
-                'filename' => (is_string($prev) && $prev!=='' ? basename($prev) : '')
-            )
+            "/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS" => [
+                'cmsViewMedia' => array (
+                    'basePath' => $view[$viewFolder]['cmsViewMedia']['basePath'],
+                    'filename' => (is_string($prev) && $prev!=='' ? basename($prev) : '')
+                )
+            ]
         );
         $prevJSON = base64_encode_url (json_encode($prevArr));
-        $prevURL = '/view-content/'.$prevJSON;
+        $prevURL = '/view/'.$prevJSON;
 
         $nextArr = array (
-            "misc" => [ "folder" => "/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS" ],
-            'cmsViewMedia' => array (
-                'basePath' => $view['cmsViewMedia']['basePath'],
-                'filename' => (is_string($next) && $next!=='' ? basename($next) : '' )
-            )
+            "/NicerAppWebOS/apps/NicerAppWebOS/content-management-systems/NicerAppWebOS" => [
+                'cmsViewMedia' => array (
+                    'basePath' => $view[$viewFolder]['cmsViewMedia']['basePath'],
+                    'filename' => (is_string($next) && $next!=='' ? basename($next) : '' )
+                )
+            ]
         );
         $nextJSON = base64_encode_url (json_encode($nextArr));
-        $nextURL = '/view-content/'.$nextJSON;
+        $nextURL = '/view/'.$nextJSON;
     }
 }
 
 //echo '<pre>'.json_encode($files,JSON_PRETTY_PRINT).'</pre>';
 ?>
-<script type="text/javascript" src="/NicerAppWebOS/logic.userInterface/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js?c=<?php echo date('Ymd_His',filemtime($naWebOS->basePath.'/NicerAppWebOS/logic.userInterface/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js'));?>"></script>
+<style>
+    #btnPrevious {
+        position:absolute;
+        top : calc(50% - 25px);
+        left : 10px;
+    }
+    #btnNext {
+        position:absolute;
+        top : calc(50% - 25px);
+        right : 10px;
+
+    }
+    #btnSetBackground {
+        position:absolute;
+        width : 50px;
+        left : calc(50% - 25px);
+        top : 10px;
+    }
+    #btnBack_fromMediaView, #btnSetBackground, #btnNext img, #btnPrevious img {
+        width : 50px;
+    }
+</style>
+<script type="text/javascript" src="/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js?c=<?php echo date('Ymd_His',filemtime($naWebOS->domainPath.'/NicerAppWebOS/businessLogic/vividUserInterface/v5.y.z/photoAlbum/4.0.0/photoAlbum-4.0.0.source.js'));?>"></script>
 <img id="btnBack_fromMediaView" class="tooltip" tooltipTheme="mainTooltipTheme" title="Go back, leave the photo-album viewer." src="/siteMedia/btnBack.png" onclick="window.history.back();" style="position:absolute"/>
-    <img id="viewMedia" src="<?php echo $targetURL.$fn;?>"/>
-<img id="btnSetBackground" class="tooltip" tooltipTheme="mainTooltipTheme" title="Set as site background" src="/siteMedia/btnBackground.png" onclick="na.backgrounds.next ('#siteBackground', na.site.globals.backgroundSearchKey, '<?php echo $targetURL.$fn;?>');"/>
-<a id="btnPrevious" href="<?php echo $prevURL;?>"><img src="/siteMedia/btnPrevious.png"/></a>
-<a id="btnNext" href="<?php echo $nextURL;?>"><img src="/siteMedia/btnNext.png"/></a>
+    <img id="viewMedia" src="/<?php echo $targetURL.$fn;?>"/>
+<img id="btnSetBackground" class="tooltip" tooltipTheme="mainTooltipTheme" title="Set as site background" src="/siteMedia/btnBackground.png" onclick="na.backgrounds.next ('#siteBackground', na.site.globals.backgroundSearchKey, '/<?php echo $targetURL.$fn;?>');"/>
+<a id="btnPrevious" href="<?php echo $prevURL;?>"><img id="btnImgPrevious" src="/siteMedia/btnPrevious.png"/></a>
+<a id="btnNext" href="<?php echo $nextURL;?>"><img id="btnImgNext" src="/siteMedia/btnNext.png"/></a>
 <div id="naPhotoAlbum__control" style="position:absolute;top:5%;width:200px;height:100px;right:1%;z-index:3200;">
     <div class="naPhotoAlbum_control__background" style="position:absolute;width:100%;height:100%;">&nbsp;</div>
 	<div id="naPhotoAlbum__control__naturalWidth" class="naPhotoAlbum_control_element" style="position:absolute;top:1em;"></div>

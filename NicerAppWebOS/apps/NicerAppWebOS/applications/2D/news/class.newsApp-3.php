@@ -336,14 +336,14 @@ class newsApp3_class {
 		
         if (true || $ctMenuFile < $ctRSSlist) {
             //$htmlMenu = '<ul style="display:none;">'.PHP_EOL."\t".'<li><a href="#">News</a>'.PHP_EOL."\t".'<ul>'.PHP_EOL;
-            $htmlMenu = '<ul style="display:none;"><li><a href="/news">News</a><ul>'.PHP_EOL;
+            $liMenu = '';
             $rewriteRules = '';
             $reverseRewriteRulesCSVlines = '';
             $keyCount = 0;
             $valueCount = 0;
             $params = array (
                 //'d' => &$this->d,
-                'html' => &$htmlMenu,
+                'html' => &$liMenu,
                 'rewriteRules' => &$rewriteRules,
                 'reverseRewriteRulesCSVlines' => &$reverseRewriteRulesCSVlines,
                 'prevLevel' => 0,
@@ -355,6 +355,8 @@ class newsApp3_class {
 			global $prevLevel;
 			$prevLevel = 0;
             
+            $htmlMenu = '<ul style="display:none;"><li><a href="/news">News</a><ul>'.PHP_EOL;
+            $htmlMenu .= $liMenu;
             $htmlMenu .= "\t".'</ul>'.PHP_EOL.'</li>'.PHP_EOL.'</ul>'.PHP_EOL;
             
             global $filePerms_ownerUser;
@@ -366,6 +368,13 @@ class newsApp3_class {
             $x = chgrp ($fn, $filePerms_ownerGroup);
             $y = chown ($fn, $filePerms_ownerUser);
             $z = chmod ($fn, $filePerms_perms_publicWriteableExecutable);
+
+            $fn = dirname(__FILE__).'/mainmenu.liOnly.php';
+            file_put_contents ($fn, '<li><a href="/news">News</a><ul>'.$liMenu.'</ul></li></ul></li></ul>');
+            $x = chgrp ($fn, $filePerms_ownerGroup);
+            $y = chown ($fn, $filePerms_ownerUser);
+            $z = chmod ($fn, $filePerms_perms_publicWriteableExecutable);
+
 
             $fn = dirname(__FILE__).'/mainmenu.rewriteRules.htaccess.txt';
             file_put_contents ($fn, $params['rewriteRules']);

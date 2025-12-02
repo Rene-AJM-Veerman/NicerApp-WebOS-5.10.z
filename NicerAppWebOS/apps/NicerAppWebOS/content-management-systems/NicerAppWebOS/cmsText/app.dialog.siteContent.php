@@ -44,9 +44,9 @@ $ip = (array_key_exists('X-Forwarded-For',apache_request_headers())?apache_reque
 global $naWebOS;
 $cdb = $naWebOS->dbsAdmin->findConnection('couchdb')->cdb;
 
-$cdb->setDatabase($view['database'],false);
+$cdb->setDatabase(str_replace('cms_tree','cms_documents',$view['database']),false);
 try { $call = $cdb->get ($view['id']); } catch (Exception $e) { echo $e->getMessage(); exit(); };
-
+//echo '<pre>'; var_dump ($call); echo '</pre>';
 $doc = $call->body->document;
 
 

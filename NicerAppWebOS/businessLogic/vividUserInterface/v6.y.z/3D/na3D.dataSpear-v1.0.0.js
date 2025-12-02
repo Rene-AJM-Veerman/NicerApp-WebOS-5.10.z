@@ -468,6 +468,7 @@ export class na3D_fileBrowser {
     }
 
     createcontrols(t, e) {
+        debugger;
         if (!t.camera) {return;};
         switch (t.controlsKey) {
             case 0: break;
@@ -500,16 +501,29 @@ export class na3D_fileBrowser {
                 }, {passive: false});
                 break;
             case 5:
-                if (t.prevControlsKey==6 && t.prevControls._camera) {
-                    var pos = $.extend({},t.prevControls._camera.position);
-                    var tar = $.extend({},t.prevControls._target);
-                }
+                var doMe = false;
                 t.controls = new OrbitControls(t.camera, t.renderer.domElement);
+                if (t.controls && t.controls._camera) {
+                    var tar = t.controls._targetEnd.clone();
+                    //tar.set(0,0,-1).applyQuaternion(t.camera.quaternion).add(t.camera.position);
+                    debugger;
+                    doMe = true;
+                };
                 t.controls.enabled = true;
-                if (t.prevControlsKey==6) t.controls.setLookAt (
-                    pos.x,
-                    pos.y,
-                    pos.z,
+                /*
+                t.controls.object.position.x = t.cameraOrigin.x;
+                t.controls.object.position.y = t.cameraOrigin.y;
+                t.controls.object.position.z = t.cameraOrigin.z;
+                if (doMe) {
+                    t.controls.target.x = tar.x;
+                    t.controls.target.y = tar.y;
+                    t.controls.target.z = tar.z;
+                }*/
+                if (doMe)
+                t.controls.setLookAt (
+                    t.cameraOrigin.x,
+                    t.cameraOrigin.y,
+                    t.cameraOrigin.z,
                     tar.x,
                     tar.y,
                     tar.z,
@@ -574,7 +588,6 @@ export class na3D_fileBrowser {
     modcontrols(t, callAnimate, e) {
         t.stagnate(t);
         t.savecamera(t);
-        t.prevControls = t.controls;
         t.controls = t.zapitem(t.controls);
         t.createcontrols(t, t.evt3);
         t.loadcamera(t);
@@ -586,7 +599,6 @@ export class na3D_fileBrowser {
     }
 
     createlisteners(t) {
-        debugger;
         document.addEventListener("pointerdown", function(e) {
             //console.log ('t.createlisteners() : pointerdown() : t.controlsKey = '+t.controlsKey);
             t.evt3 = $.extend({},e);
@@ -660,10 +672,16 @@ export class na3D_fileBrowser {
 
         var fncn = t.me + '::create(t)';
         na.m.waitForCondition (fncn + ' : t.items ready?', function() {
-            return t.itemsInitialized && t.started4;// && t.items.length > 20 && t.items[0].model;
+            return t.itemsInitialized && t.started4;//t.items.length > 20 && t.started4;
         }, function () {
+            for (var j=0; j<t.items.length; j++) {
+                var it = t.items[j];
+                t.scene.add (it.model);
+            }
+
             t.createcontrols(t);
             t.createlisteners(t);
+
         }, 200);
     }
 
@@ -751,11 +769,9 @@ export class na3D_fileBrowser {
                     // build a line towards parent
                     if (hoveredItem && hoveredItem.it && !done) {
                         let p = hoveredItem.it.model.position;
-                        if (t.hoverOverName=='{UNKNOWN}') t.hoverOverName = "("+hoveredItem.it.column+":"+hoveredItem.it.row+") ("+p.x+", "+p.y+", "+p.z + ") : " + hoveredItem.it.filepath+'/'+hoveredItem.it.name+' : '+hoveredItem.it.color;
-                        //if (t.hoverOverName=='{UNKNOWN}') t.hoverOverName = hoveredItem.it.name;// + ' ('+intersects.length+')';
+                        //if (t.hoverOverName=='{UNKNOWN}') t.hoverOverName = "("+hoveredItem.it.column+":"+hoveredItem.it.row+") ("+p.x+", "+p.y+", "+p.z + ") : " + hoveredItem.it.name;
+                        if (t.hoverOverName=='{UNKNOWN}') t.hoverOverName = hoveredItem.it.name;// + ' ('+intersects.length+')';
                     //debugger;
-                        debugger;
-                        done = true;
                         var
                         it = hoveredItem.it,
                         parent = it.parent ? t.items[it.parent.idx] : null,
@@ -866,6 +882,7 @@ export class na3D_fileBrowser {
                 $("#site3D_label").html(t.hoverOverName).css({display:"flex",opacity:1});
 
                 const [hovered] = t.raycaster.intersectObjects(t.s2);
+                //debugger;
                 if (hovered && hovered.object.type!=="Line") {
                     // Setup label
                     t.renderer.domElement.className = "hovered";
@@ -1462,7 +1479,6 @@ export class na3D_fileBrowser {
     async initializeItems (t) {
         var p = { t : t, ld2 : {}, idxPath : "", idxPath2 : "/0" };
         t.s2 = [];
-        debugger;
         na.m.walkArray_async (t.data[0]['filesAtRoot'], t.data[0]['filesAtRoot'], t.initializeItems_walkKey, t.initializeItems_walkValue, false, p);
         t.itemsInitialized = true;
 
@@ -1481,23 +1497,15 @@ export class na3D_fileBrowser {
             //console.log ("initializeItems_walkKey", "files", cd);
         } else if (ps[ps.length-1]=="folders") {
 
-            var path = cd.path.replace(/\/folders/g, '');
-            if (path.substr(0,1)!=='/') path = '/'+path;
-            debugger;
-
             var
             lastParent = cd.params.t.items[0],
             pk = cd.path;
             if (!cd.params.ld2[pk]) cd.params.ld2[pk] = { levelIdx : 0 };
             for (var i=0; i<cd.params.t.items.length; i++) {
                 var it2 = cd.params.t.items[i];
-                /*
                 if (it2.filepath+"/"+it2.name+"/folders" === cd.path) {
                     lastParent = it2;
                 }
-                if (it2.filepath+"/"+it2.name === cd.path) {
-                    lastParent = it2;
-                }*/
             }
 
 
@@ -1527,7 +1535,7 @@ export class na3D_fileBrowser {
                 name : cd.k,
                 idx : cd.params.t.items.length,
                 idxPath : cd.params.idxPath,//localIdx + "/" + cd.params.t.items.length,
-                filepath : path,
+                filepath : cd.path,
                 levelIdx : ++cd.params.ld2[pk].levelIdx,
                 parent : lastParent,
                 leftRight : 0,
@@ -1573,7 +1581,7 @@ export class na3D_fileBrowser {
                         name : fkey,
                         idx : cd.params.t.items.length,
                         idxPath : cd.params.idxPath + "/" + it.idx,// + "/" + cd.params.t.items.length,//cd.params.t.items.length,
-                        filepath : path+"/"+cd.k,
+                        filepath : cd.path+"/"+cd.k,
                         levelIdx : ++cd.params.ld2[pk].levelIdx,
                         parent : it,
                         leftRight : 0,
@@ -1748,7 +1756,7 @@ export class na3D_fileBrowser {
                     var l = data.selected.length, rec = null;
                     for (var i=0; i<l; i++) {
                         var d = data.selected[i], rec2 = data.instance.get_node(d);
-                        if (rec2 && rec1.original) rec = rec2;
+                        if (rec2 && rec2.original) rec = rec2;
                     }
 
                     if (
@@ -1974,8 +1982,7 @@ export class na3D_fileBrowser {
         na.m.log (1555, fncn+' : BEGIN .pos calculations');
 
         for (var path in t.ld3) {
-            path = path.replace(/\/.*?/,'');
-            var ld3 = t.ld3['/'+path];
+            var ld3 = t.ld3[path];
 
             // calculate x,y,z as grid positions in the scene,
             // to be translated later in this function into scene coordinates.
@@ -2008,15 +2015,15 @@ export class na3D_fileBrowser {
                             && it2.levelIdx <= it.levelIdx
                         ) {
                             if (
-                                column >= ld3.cubeSideLengthCount
-                                && row >= ld3.cubeSideLengthCount
+                                column > ld3.cubeSideLengthCount
+                                && row > ld3.cubeSideLengthCount
                             ) {
                                 pos.z++;
                                 depth++;
 
                                 column = 0;
                                 row = 0;
-                            } else if (row >= ld3.cubeSideLengthCount) {
+                            } else if (row > ld3.cubeSideLengthCount) {
                                 pos.z++;
                                 depth++;
 
@@ -2025,7 +2032,7 @@ export class na3D_fileBrowser {
 
                                 pos.y = 0;
                                 pos.x++;
-                            } else if (column >= ld3.cubeSideLengthCount) {
+                            } else if (column > ld3.cubeSideLengthCount) {
                                 pos.y++;
                                 pos.x = 0;
                                 row++;
@@ -2035,7 +2042,7 @@ export class na3D_fileBrowser {
                                 pos.x++;
                             }
 
-                            if (columnField >= ld3.cubeSideLengthCount) {
+                            if (columnField > ld3.cubeSideLengthCount) {
                                 pos.yField++;
                                 pos.xField = 0;
                                 rowField++;
@@ -2057,7 +2064,6 @@ export class na3D_fileBrowser {
                     it.depth = depth;
                     it.pos = pos;
                     it.ld3 = ld3;
-                    if (it.name=='Artists') debugger;
                     //console.log ('t334', it.filepath.replace('/0/filesAtRoot/folders','').replace(/\/folders/g,'')+'/'+it.name, columnField, rowField, column, row, depth, pos);
                     //if (it.name=="gull" || it.name=="owl") debugger;
                 }
@@ -2186,7 +2192,7 @@ export class na3D_fileBrowser {
         na.m.log (1555, fncn+' : Do final position calculations for '+t.items.length+' scene items.');
         var r = 1.0;
         for (var i=0; i<t.items.length; i++) {
-            if (!t.showFiles && t.items[i].name.substr(t.items[i].name.length-4,4)=='.mp3') continue;
+            if (!t.showFiles && its[i].name.substr(its[i].name.length-4,4)=='.mp3') continue;
 
             var
             offsetXY = 200,
@@ -2374,90 +2380,89 @@ export class na3D_fileBrowser {
             //if (it.model) {
                 if (p) {
                     if (!t.ld3[p.idxPath].level) t.ld3[p.idxPath].level = 1;
-                    var radius = 20;
                     p.c1 = {
                         a : 0,
-                        b : (360 / t.ld3[p.idxPath].itemCount) * (p.levelIdx+1)
+                        b : 360 / t.ld3[p.idxPath].itemCount
                     };
-                    p.c1.c = jsem.math.xy.pointOnCircle_angleInDegrees (0,0,radius,p.c1.b);
+                    p.c1.c = jsem.math.xy.pointOnCircle_angleInDegrees (
+                                0, 0,
+                                20
+                                /*+ (
+                                    it.level
+                                    * (t.ld3[p.idxPath].level > 1 ? t.ld3[p.idxPath].level : 1)
+                                )*/, p.c1.b
+                                           );
+                    p.c2 = {
+                        a : 0,
+                        b : 360 / t.ld3[p.idxPath].itemCount
+                    };
+                    p.c2.c = jsem.math.xy.pointOnCircle_angleInDegrees (
+                                0, 0,
+                                20
+                                /*+ (
+                                    it.level
+                                    * (t.ld3[p.idxPath].level > 1 ? t.ld3[p.idxPath].level : 1)
+                                )*/, p.c2.b
+                                          );
                 }
                 var c1 = {
                     a : 0,
-                    b : (360 / t.ld3[it.idxPath].itemCount) * (it.levelIdx+1)
+                    b : 360 / t.ld3[it.idxPath].itemCount
                 };
-                c1.c = jsem.math.xy.pointOnCircle_angleInDegrees (0, 0, radius, c1.b);
+                c1.c = jsem.math.xy.pointOnCircle_angleInDegrees (
+                            0, 0,
+                            20
+                            /*+ (
+                                it.level
+                                * (t.ld3[p.idxPath].level > 1 ? t.ld3[p.idxPath].level : 1)
+                            )*/, c1.b
+                                        );
+                var c2 = {
+                    a : 0,
+                    b : 360 / t.ld3[it.idxPath].itemCount
+                };
+                c2.c = jsem.math.xy.pointOnCircle_angleInDegrees (
+                            0, 0,
+                            20
+                            /*+ (
+                                it.level
+                                * (t.ld3[p.idxPath].level > 1 ? t.ld3[p.idxPath].level : 1)
+                            )*/, c2.b
+                                        );
 
 
                 if (!mx) var mx = 1;
                 if (!my) var my = 1;
                 if (!mz) var mz = 1;
-                var
-                mpx = 800, mpy = 800, mpz = 800,
-                mrx = 15, mry = 15, mrz = 15,
-                msx = 400, msy = 400, msz = 400,
-                rx = 1, ry = 1, rz = 1;
+                var mpx = 500, mpy = 500, mpz = 1500, msx = 5000, msy = 5000, msz = 500;
+                var mrx = 15, mry = 15, mrz = 15;
+                var rx = 1, ry = 1, rz = 1;
                 if (!prx) var prx = rx;
                 if (!pry) var pry = ry;
                 if (!prz) var prz = rz;
-                if (!px) var px = 0;
-                if (!py) var py = 0;
-                if (!pz) var pz = 0;
-                if (!rax) var rax = 0;
-                if (!ray) var ray = 0;
-                if (!raz) var raz = 0;
+                if (prevIt) {
+                    if (prevIt.filepath.replace(/folders\//g,'')!==it.filepath.replace(/folders\//g,'')) {
+                        if (pp && p.idx!==pp.idx) {
+                            if (p.columnOffsetValue<0) mx = -1 * mx;
+                            if (p.rowOffsetValue<0) my = -1 * my;
+                            if (p.depthOffsetValue<0) mz = -1 * mz;
+                            pp = p;
+                        } else pp = p;
 
-
-                /*if (it && it.parent && it.parent.px) {
-                    px = it.parent.px;
-                    py = it.parent.py;
-                    pz = it.parent.pz;
-                } else */if (it && it.parent && !it.parent.px && prevIt && prevIt.parent && it.parent.idx!==prevIt.parent.idx) {
-                    px = p.sPos.x
-                        + (p.columnOffsetValue*mpx*p.c1.c.x)
-                    py = p.sPos.y
-                        + (p.rowOffsetValue*mpy*p.c1.c.y)
-                    pz = p.sPos.z
-                        + (p.depth*mpz*p.c1.c.y)
-
-                    it.parent.px = px;
-                    it.parent.py = py;
-                    it.parent.pz = pz;
-                    /*rx += 2 * mrx * c1.c.x;
-                    ry += 2 * mry * c1.c.y;
-                    rz += 2 * mrz * c1.c.y;*/
-                    rx += 2 * msx * c1.c.x;
-                    ry += 2 * msy * c1.c.y;
-                    rz += 2 * msz * c1.c.y;
-
-                    rax = 2* mpx * Math.random();
-                    ray = 2 * mpy * Math.random();
-                    raz = 2 * mpz * Math.random();
-
-
-                } else if (it && it.parent){
-                    px = it.parent.px || px;
-                    py = it.parent.py || py;
-                    pz = it.parent.pz || pz;
-
-                    it.parent.px = px;
-                    it.parent.py = py;
-                    it.parent.pz = pz;
-
-                    px = it.parent.rax || rax;
-                    py = it.parent.ray || ray;
-                    pz = it.parent.raz || raz;
-
-                    it.parent.rax = rax;
-                    it.parent.ray = ray;
-                    it.parent.raz = raz;
-                };
-
-
-                prevIt = it;
+                        if (true) {
+                            prx = rx;
+                            pry = ry;
+                            prx = rz;
+                        }
+                        /*rx = prx + mrx * Math.random();
+                        ry = pry + mry * Math.random();
+                        rz = prz + mrz * Math.random();*/
+                        prevIt = it;
+                    };
+                } else {
+                    prevIt = it;
+                }
                 mx = 1; my = 1; mz = 1;
-
-
-
 
 
                 // calculate folders' and files' x,y,z position in the scene
@@ -2465,71 +2470,68 @@ export class na3D_fileBrowser {
                 } else*/ if (it.model && p) {
                     it.sPos.x = //Math.round( (
                         mx * (
-                            px
-                            + (p.column * mpx * 10)
-                            //+ ( (it.level+1) * rx )
-                            + rx
-                            + rax
-                            //+ (p.column * p.c1.c.x)
-                            //+ -1 * (Math.sin(it.column) * Math.cos(it.row) * it.depth)
-                            //+ -1 * (Math.sin(it.column) * it.depth)
-                            //+ (mpx * c1.c.x)
-                            //+ mpx
-                            + (it.column * msx)
+                            (
+                            p && p.sPos && p.sPos.x ? (
+                                    p.sPos.x
+                                    + (mpx * p.c1.c.x)
+
+                                    + (rx * msx * p.column)
+                                    //+ (rx*mpx*p.columnOffsetValue)
+                                    )
+                            :0
+                            )
+                            + (mpx * c2.c.x)
+                            + (it.column * mpx)
                             //+ (it.columnOffsetValue * mpx)
                         )
 
                     //) / divider);
                     it.sPos.y = // Math.round( (
                         my * (
-                            py
-                            + (p.row * mpy * 10)
-                            //+ ( (it.level+1) * ry)
-                            + ry
-                            + ray
-                            //+ (p.row * p.c1.c.y)
-                            //+ Math.cos(it.column) * Math.cos(it.row) * it.depth
-                            //+ Math.cos(it.row) * it.depth
-                            //+ (mpy * c1.c.y)
-                            //+ mpy
-                            + (it.row * msy)
+                            (
+                                p && p.sPos && p.sPos.y ? (
+                                    p.sPos.y
+                                    + (mpy * p.c1.c.y)
+                                    + (ry*msy*p.row)
+                                    //+ (ry*mpy*p.rowOffsetValue)
+                                         )
+                                : 0
+                            )
+                            + (mpy * c2.c.y)
+                            + (it.row * mpy)
                             //+ (it.rowOffsetValue * mpy)
                         )
                     //) / divider);
                     it.sPos.z = // Math.round( (
                         mz * (
-                            pz
-                            + ( p.depth * mpz * 10)
-                            //+ ( (it.level+1) * rz )
-                            + rz
-                            + raz
-                            //+ Math.cos(it.column) * Math.sin(it.row) * it.depth
-                            //+ (it.level * mpz)
-                            //+ msz
-                            //+ (mpz * c1.c.y)
+                            ( p  && p.sPos && p.sPos.z ? (
+                                    (p.sPos.z)
+                                    + (rz*msz*(p.level+1))
+                                    //+ (p.depth*mpz)
+//                                    + (p.depthOffsetValue*mpz)
+                                       )
+
+                              : 0
+                            )
+                            + (it.level * mpz)
+                            + msz
+                            + (mpz * c2.c.y)
                             + (it.depth * msz)
                             //+ (it.depthOffsetValue * mpz)
                         )
+
+
                     //) / divider;
-                        if (it.name=='Garbage') debugger;
-                        if (it.name=='') debugger;
-
-                    //console.log (fncn+' : adding mesh : ', it.filepath + "/" + it.name, it.column, it.row, it.depth, it.sPos, p.sPos);
-
+                    console.log ("t555p", it.filepath + "/" + it.name, it.sPos);
+                    //if (it.name.match("Relaxation")) debugger;
                 } else if (it.model) {
-                    /*
                     it.sPos.x = it.columnOffsetValue * mpx;
                     it.sPos.y = it.rowOffsetValue * mpy;
                     it.sPos.z = it.depthOffsetValue * mpz;
 
-                    it.sPos.x = it.column * mpx * c1.c.x;
-                    it.sPos.y = it.row * mpy * c1.c.y;
-                    it.sPos.z = it.depth * mpz * c1.c.z;
-                    */
-
-                    it.sPos.x = it.column * mpx;
-                    it.sPos.y = it.row * mpy;
-                    it.sPos.z = it.depth * mpz;
+                    it.sPos.x = -1 * it.column * mpx;
+                    it.sPos.y = -1 * it.row * mpy;
+                    it.sPos.z = -1 * it.depth * mpz;
 
                 }
                 if (false) {
@@ -2576,23 +2578,18 @@ export class na3D_fileBrowser {
         na.m.log (1555, fncn+' : Add scene items to scene.');
         for (var j=0; j<t.items.length; j++) {
             var p7a = t.items[j].idxPath;
-
-            if (false) {
-                var p7b = p7a.substr(1).split("/");
-                p7b.pop();
-                var p7a1 = '/'+p7b.join('/');
-                if (p7a1==='/') p7a1 = p7a;
-            } else {
-                var p7a1 = p7a;
-            }
-
+            var p7b = p7a.substr(1).split("/");
+            //p7b.pop();
+            //var p7a1 = '/'+p7b.join('/');
+            //if (p7a1==='/') p7a1 = p7a;
+            var p7a1 = p7a;
             if (t.ld3 && t.ld3[p7a1]) {
                 var
                 color = t.ld3[p7a1].color,
                 list = t.ld3[p7a1].colorList,
                 p1 = t.ld3[p7a1].p1,
                 it = t.items[j];
-                if (it && !it.name.match(/\/.mp3$/)) {
+                if (it) {
                     //if (it.name.match(/SABATON/)) debugger;
                     if (color) it.color = color; else {
                         if (it.parent && it.parent) {
@@ -2613,44 +2610,44 @@ export class na3D_fileBrowser {
                         }
                     }
 
-                    console.log ("t321", it.name, it.color);
+                    //console.log ("t321", it.name, it.color);
 
-                    var sideLength = 300, length = sideLength, width = sideLength, oc = 1;
+                    var sideLength = 300, length = sideLength, width = sideLength;
                     var
                     materials2 = [
                         new THREE.MeshBasicMaterial({
                             color : it.color ? it.color : "rgb(0,0,255)",
-                            opacity : oc,
+                            opacity : 0.5,
                             wireframe : t.wireframe,
                             transparent : true
                         }),
                         new THREE.MeshBasicMaterial({
                             color : it.color ? it.color : "rgb(0,0,255)",
-                            opacity : oc,
+                            opacity : 0.5,
                             wireframe : t.wireframe,
                             transparent : true
                         }),
                         new THREE.MeshBasicMaterial({
                             color : it.color ? it.color : "rgb(0,0,255)",
-                            opacity : oc,
+                            opacity : 0.5,
                             wireframe : t.wireframe,
                             transparent : true
                         }),
                         new THREE.MeshBasicMaterial({
                             color : it.color ? it.color : "rgb(0,0,255)",
-                            opacity : oc,
+                            opacity : 0.5,
                             wireframe : t.wireframe,
                             transparent : true
                         }),
                         new THREE.MeshBasicMaterial({
                             color : it.color ? it.color : "rgb(0,0,255)",
-                            opacity : oc,
+                            opacity : 0.5,
                             wireframe : t.wireframe,
                             transparent : true
                         }),
                         new THREE.MeshBasicMaterial({
                             color : it.color ? it.color : "rgb(0,0,255)",
-                            opacity : oc,
+                            opacity : 0.5,
                             wireframe : t.wireframe,
                             transparent : true
                         })
@@ -2794,9 +2791,9 @@ export class na3D_fileBrowser {
         };
         var
         tf = t.winners.behind + Math.round((t.winners.behind - t.winners.front) / 2),
-        ol = 34 * 1000,
-        numPoints = 555,
-        radius = 34*1000;
+        ol = 20 * 1000,
+        numPoints = 730,
+        radius = 20*1000;
         t.middle = {
             x : Math.round((t.winners.west + t.winners.east) / 2),
             y : Math.round((t.winners.north + t.winners.south) / 2),
@@ -2804,14 +2801,14 @@ export class na3D_fileBrowser {
         };
         //t.flyControls.object.lookAt (new THREE.Vector3( t.middle.x, t.middle.y, t.middle.z));
 
-
+        if (!t.started4) {
+            debugger;
             t.cameraOrigin = {
                 x : t.middle.x,
                 y : t.middle.y,
                 z : radius
             };
 
-        if (!t.started4) {
             t.controlsKey = 6;
             t.controls = t.zapitem(t.controls);
             t.createcontrols(t, t.evt3);
@@ -2975,7 +2972,6 @@ export class na3D_fileBrowser {
                     },
                     onComplete(e) {
                         t.animPlaying = false;
-                        t.prevControlsKey = 6;
                         t.controlsKey = 5;
                         t.controls = t.zapitem(t.controls);
                         t.createcontrols(t, t.evt3);
